@@ -1,0 +1,187 @@
+/* SUN */
+.sun {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #fff176, #fbc02d, #f57f17);
+  box-shadow: 0 0 30px rgba(255, 213, 0, 0.5);
+  animation: sun-glow 3s ease-in-out infinite;
+}
+
+@keyframes sun-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 15px rgba(255, 200, 100, 0.5),
+      0 0 30px rgba(255, 180, 0, 0.6);
+  }
+  50% {
+    box-shadow: 
+      0 0 25px rgba(255, 220, 100, 0.7),
+      0 0 40px rgba(255, 200, 0, 0.8);
+  }
+}
+
+/* CLOUD */
+.cloud {
+  width: 120px;
+  height: 60px;
+  background: #ccc;
+  border-radius: 50px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: #ccc;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  top: -35px;
+}
+
+.cloud::before {
+  left: 15px;
+}
+
+.cloud::after {
+  left: 55px;
+}
+
+.radiant {
+  animation: cloud-glow 2s ease-in-out infinite;
+}
+
+@keyframes cloud-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(255, 255, 255, 0.3),
+      0 0 30px rgba(180, 180, 180, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(255, 255, 255, 0.4),
+      0 0 35px rgba(180, 180, 180, 0.25);
+  }
+}
+
+/* RAIN */
+.rainy {
+  position: relative;
+  width: 120px;
+}
+
+.rainy .cloud {
+  width: 120px;
+  height: 60px;
+  background: #ccc;
+  border-radius: 50px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Singular raindrop */
+.rain {
+  position: absolute;
+  top: 60px;
+  left: 40px;
+  width: 8px;
+  height: 20px;
+  background: #76b7eb;
+  border-radius: 4px;
+  animation: rain-fall 0.6s linear infinite; 
+}
+
+@keyframes rain-fall {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(20px); opacity: 0; }
+}
+
+/* MOON */
+.moon {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle at 30% 30%, #fdf6e3, #e0dac5);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px rgba(255, 255, 200, 0.3),
+    0 0 25px rgba(255, 255, 220, 0.4);
+  animation: moon-glow 3s ease-in-out infinite;
+}
+
+@keyframes moon-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 10px rgba(255, 255, 200, 0.3),
+      0 0 25px rgba(255, 255, 220, 0.4);
+  }
+  50% {
+    box-shadow: 
+      0 0 15px rgba(255, 255, 200, 0.5),
+      0 0 35px rgba(255, 255, 220, 0.6);
+  }
+}
+
+/* WIND */
+.wind-icon {
+  position: relative;
+  width: 100px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.wind-line {
+  height: 6px;
+  background: linear-gradient(to right, rgba(200, 200, 255, 0.1), rgba(180, 180, 255, 0.4));
+  border-radius: 3px;
+  animation: wind-blow 2s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(180, 200, 255, 0.2);
+}
+
+.wind-line:nth-child(1) {
+  width: 60%;
+}
+.wind-line:nth-child(2) {
+  width: 80%;
+}
+.wind-line:nth-child(3) {
+  width: 70%;
+}
+
+.delay1 {
+  animation-delay: 0.3s;
+}
+
+.delay2 {
+  animation-delay: 0.6s;
+}
+
+@keyframes wind-blow {
+  0%, 100% { transform: translateX(0); opacity: 1; }
+  50%      { transform: translateX(10px); opacity: 0.6; }
+}
+
+/* HTML FOR EACH ICON */
+/* 
+Sun: <div class="sun"></div>
+Moon: <div class="moon"></div>
+Cloud: <div class="cloud"></div>
+Cloud with rain: 
+<div class="rainy">
+  <div class="cloud"></div>
+  <div class="rain" style="left: 10px; animation-delay: 0s;"></div>
+  <div class="rain" style="left: 35px; animation-delay: 0.2s;"></div>
+  <div class="rain" style="left: 60px; animation-delay: 0.4s;"></div>
+</div>
+Wind: 
+<div class="windy">
+  <div class="wind-line line1"></div>
+  <div class="wind-line line2"></div>
+  <div class="wind-line line3"></div>
+</div> 
+*/
