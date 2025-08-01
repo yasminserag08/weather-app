@@ -1,5 +1,13 @@
 const apiKey = "3a58d57be667e419d11430ebc8ac6896";
 
+const getForecastBtn = document.querySelector('#get-forecast');
+const cityInput = document.querySelector('#search-city');
+
+getForecastBtn.addEventListener('click', async () => {
+  const forecast = await getForecast(cityInput.value)
+  renderForecast(forecast);
+});
+
 async function getForecast(city)
 {
   const geoUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
@@ -19,4 +27,17 @@ async function getForecast(city)
     temp_max: forecast.main.temp_max,
     temp_min: forecast.main.temp_min
   }));
+  console.log(forecasts);
+  return forecasts[0];
+}
+
+function renderForecast(forecast)
+{
+  document.body.innerHTML += `
+    <div>
+      <ul>
+        <li>Temperature: ${forecast.temp}</li>
+        <li>Feels like: ${forecast.feels_like}</li>  
+      </ul>
+    </div>`
 }
