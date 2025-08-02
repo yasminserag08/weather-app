@@ -5,14 +5,30 @@
     <link rel="stylesheet" href="./styles/styles.css">
   </head>
   <body>
-    <div class="search-area">
-      <input id="search-city">
-      <button id="get-forecast">Get forecast</button>
+    <div class="sidebar">
+      <div>Weather</div>
+      <div>Cities</div>
+      <div>Settings</div>
     </div>
-    <div class="icon-container"></div>
-    <div class="location-container"></div>
-    <div class="current-weather-container"></div>
-    <div class="forecasts-container"></div>
+
+    <div class="search-area">
+      <input class="search-city">
+      <button class="get-forecast">Get forecast</button>
+    </div>
+
+    <div class="main-panel-container">
+      <div class="location-and-current-weather-container">
+        <div class="location-container"></div>
+        <div class="current-weather-container"></div>
+      </div>
+      <div class="icon-container"></div>
+    </div>
+
+    <h3>TODAY'S FORECAST</h3>
+    <div class="today-forecasts-container"></div>
+
+    <div class="air-conditions-container">AIR CONDITIONS</div>
+    <div class="five-day-forecast-container">5-DAY FORECAST</div>
     <script src="script.js"></script>
   </body>
 </html>

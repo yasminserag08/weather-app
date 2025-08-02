@@ -1,11 +1,11 @@
 const apiKey = "3a58d57be667e419d11430ebc8ac6896";
 
-const iconContainer = document.querySelector('.icon-container');
-const getForecastBtn = document.querySelector('#get-forecast');
-const cityInput = document.querySelector('#search-city');
+const cityInput = document.querySelector('.search-city');
+const getForecastBtn = document.querySelector('.get-forecast');
 const locationContainer = document.querySelector('.location-container');
-const forecastsContainer = document.querySelector('.forecasts-container');
 const currentWeatherContainer = document.querySelector('.current-weather-container');
+const todayForecastContainer = document.querySelector('.today-forecasts-container');
+const iconContainer = document.querySelector('.icon-container');
 
 window.onload = function() 
 {
@@ -25,29 +25,10 @@ async function getCurrentWeather(city)
   const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
   const res = await fetch(url);
   const data = await res.json();
-  console.log(data);;
+  console.log(data);
   currentWeatherContainer.innerHTML = `
-    Main: ${data.weather[0].main} <br>
-    Description: ${data.weather[0].description} <br>
-    Temperature: ${data.main.temp} <br>
-    Feels like: ${data.main.feels_like} <br>
-    Humidity: ${data.main.humidity} <br>
-    Minimum temperature: ${data.main.temp_min} <br>
-    Maximum temperature: ${data.main.temp_max} <br>
-    Icon: ${data.weather[0].icon}`;
-  const icon = data.weather[0].icon; 
-  if(icon === '01d')
-  {
-    iconContainer.innerHTML = '<div class="sun"></div>';
-  }
-  else if(icon === '01n')
-  {
-    iconContainer.innerHTML = '<div class="moon"></div>';
-  }
-  else if(icon === '03d')
-  {
-    iconContainer.innerHTML = '<div class="cloud radiant"></div>';
-  }
+    ${data.main.temp}25&deg;C`;
+  iconContainer.innerHTML = `<div class="sun"></div>`
 }
 
 async function getForecasts(city)
@@ -61,7 +42,6 @@ async function getForecasts(city)
   const forecastRes = await fetch(forecastUrl);
   const forecastData = await forecastRes.json();
   const forecastDataList = forecastData.list;
-  console.log(forecastDataList);
   const forecasts = forecastDataList.map(forecast => ({
     date: forecast.dt_txt,
     main: forecast.weather[0].main,
@@ -72,20 +52,7 @@ async function getForecasts(city)
     temp_max: forecast.main.temp_max,
     temp_min: forecast.main.temp_min,
   }));
-  console.log(forecasts);
   return forecasts;
-}
-
-function renderForecast(forecast)
-{
-  forecastsContainer.innerHTML += `
-    <ul>
-      <li>Date: ${forecast.date}</li>
-      <li>Temperature: ${forecast.temp}</li>
-      <li>Feels like: ${forecast.feels_like}</li> 
-      <li>Main: ${forecast.main}</li> 
-      <li>Description: ${forecast.description}</li>
-    </ul>`;
 }
 
 async function getLocation()
@@ -114,6 +81,20 @@ async function success(position)
     <p>${state}</p>
     <p>${name}</p>`;
   getCurrentWeather(name);
+  const forecasts = await getForecasts(name);
+  console.log(forecasts);
+  const todayForecasts = forecasts.filter(forecast => {
+    return forecast.date.includes('2025-08-02');
+  });
+  
+  todayForecasts.forEach(forecast => {
+    todayForecastContainer.innerHTML += `
+      <div>
+        ${forecast.date} <br>
+        icon <br>
+        ${forecast.temp} <br>
+      </div>`
+  });
 }
 
 function error(err)
