@@ -166,6 +166,67 @@
   50%      { transform: translateX(10px); opacity: 0.6; }
 }
 
+.sun-behind {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle at center, #FFD700 60%, #FFA500);
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+  animation: sun-glow 3s ease-in-out infinite;
+}
+
+@keyframes sun-glow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* Cloud when in front of sun */
+.sun-behind .cloud {
+  transform: scale(0.5); /* Makes it 50% of original size */
+  position: absolute;
+  bottom: -10px;
+  left: 20px;
+}
+
+/* MOON START */
+.moon-behind {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle at center, #fdf6e3, #e0dac5);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px rgba(255, 255, 200, 0.3),
+    0 0 25px rgba(255, 255, 220, 0.4);
+  animation: moon-glow 3s ease-in-out infinite;
+}
+
+@keyframes moon-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 10px rgba(255, 255, 200, 0.3),
+      0 0 25px rgba(255, 255, 220, 0.4);
+  }
+  50% {
+    box-shadow: 
+      0 0 15px rgba(255, 255, 200, 0.5),
+      0 0 35px rgba(255, 255, 220, 0.6);
+  }
+}
+
+/* Cloud when in front of moon */
+.moon-behind .cloud {
+  transform: scale(0.5); /* Makes it 50% of original size */
+  position: absolute;
+  bottom: -10px;
+  left: 20px;
+}
+
 /* HTML FOR EACH ICON */
 /* 
 Sun: <div class="sun"></div>
