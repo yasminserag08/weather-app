@@ -83,10 +83,16 @@ async function success(position)
   getCurrentWeather(name);
   const forecasts = await getForecasts(name);
   console.log(forecasts);
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}-${month}-${day}`;
   const todayForecasts = forecasts.filter(forecast => {
-    return forecast.date.includes('2025-08-02');
+    return forecast.date.includes(formattedDate);
   });
-  
+
   todayForecasts.forEach(forecast => {
     todayForecastContainer.innerHTML += `
       <div>
