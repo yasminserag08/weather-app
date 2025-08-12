@@ -25,10 +25,11 @@ async function getCurrentWeather(city)
   const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
   const res = await fetch(url);
   const data = await res.json();
+  const icon = data.weather[0].icon;
   console.log(data);
   currentWeatherContainer.innerHTML = `
     ${data.main.temp}25&deg;C`;
-  iconContainer.innerHTML = getIcon(data.weather[0].icon);
+  iconContainer.innerHTML = `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
 }
 
 async function getForecasts(city)
@@ -108,32 +109,4 @@ function error(err)
   locationContainer.innerHTML = 'Location access denied';
 }
 
-function getIcon(icon)
-{
-  if(icon === '01d') 
-  { 
-    return '<div class="sun"></div>';
-  }
-  if(icon === '01n') 
-  { 
-    return '<div class="moon"></div>'; 
-  }
-  if(icon === '02d')
-  {
-    return `
-      <div class="sun behind">
-        <div class="cloud radiant"></div>
-      </div>`
-  }
-  if(icon === '02n')
-  {
-    return `
-      <div class="icon moon-behind">
-        <div class="cloud radiant"></div>
-      </div>`
-  }
-  if(icon === '03d' || icon === '03n')
-  {
-    return '<div class="cloud"></div>'
-  }
-}
+
