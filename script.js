@@ -1,112 +1,115 @@
 const apiKey = "3a58d57be667e419d11430ebc8ac6896";
 
+// DOM elements
 const cityInput = document.querySelector('.search-city');
 const getForecastBtn = document.querySelector('.get-forecast');
 const locationContainer = document.querySelector('.location-container');
 const currentWeatherContainer = document.querySelector('.current-weather-container');
 const todayForecastContainer = document.querySelector('.today-forecasts-container');
 const iconContainer = document.querySelector('.icon-container');
+const airConditionsContainer = document.querySelector('.air-conditions-container');
+const seeMoreBtn = document.querySelector('.see-more');
 
-window.onload = function() 
-{
-  getLocation();
-};
+/* -------------------- 1. DATA LAYER -------------------- */
 
-getForecastBtn.addEventListener('click', async function(event) {
+// Fetch current weather by city name
+async function fetchCurrentWeather(city) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+// Fetch 5-day forecast by city name
+async function fetchForecast(city) {
+  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+// Reverse geocode lat/lon to get city info
+async function fetchCityFromCoords(lat, lon) {
+  const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+/* -------------------- 2. RENDERING LAYER -------------------- */
+
+function renderLocation(city) {
+  locationContainer.innerHTML = `
+    <p>${city}</p>`;
+}
+
+function renderCurrentWeather(data) {
+  const icon = data.weather[0].icon;
+  currentWeatherContainer.innerHTML = `${data.main.temp}&deg;C`;
+  iconContainer.innerHTML = `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
+  airConditionsContainer.innerHTML = `
+    <br> Real feel: ${data.main.feels_like}
+    <br> Wind: ${data.wind.speed}
+    <br> Humidity: ${data.main.humidity}`;
+}
+
+function renderTodayForecast(forecasts) {
+  todayForecastContainer.innerHTML = forecasts.map(forecast => `
+    <div>
+      ${forecast.date} <br>
+      <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
+      ${forecast.temp} <br>
+    </div>
+  `).join('');
+}
+
+/* -------------------- 3. CONTROLLER LAYER -------------------- */
+
+async function loadWeatherByCity(city) {
+  const currentData = await fetchCurrentWeather(city);
+  renderCurrentWeather(currentData);
+
+  const forecastData = await fetchForecast(city);
+  const forecasts = forecastData.list.map(f => ({
+    date: f.dt_txt,
+    main: f.weather[0].main,
+    description: f.weather[0].description,
+    feels_like: f.main.feels_like,
+    humidity: f.main.humidity,
+    temp: f.main.temp,
+    temp_max: f.main.temp_max,
+    temp_min: f.main.temp_min,
+    icon: f.weather[0].icon
+  }));
+
+  const today = new Date().toISOString().split('T')[0];
+  const todayForecasts = forecasts.filter(f => f.date.includes(today));
+  renderTodayForecast(todayForecasts);
+}
+
+async function loadWeatherByLocation(lat, lon) {
+  const cityData = await fetchCityFromCoords(lat, lon);
+  const cityName = cityData[0].name;
+  const state = cityData[0].state;
+  renderLocation(cityName);
+  await loadWeatherByCity(cityName);
+}
+
+/* -------------------- 4. EVENTS -------------------- */
+
+getForecastBtn.addEventListener('click', (event) => {
   event.preventDefault();
-  const forecasts = await getForecasts(cityInput.value)
-  forecasts.forEach(forecast => {
-    renderForecast(forecast);
-  });
+  const city = cityInput.value.trim();
+  if (city) {
+    loadWeatherByCity(city);
+    renderLocation(city);
+  }
 });
 
-async function getCurrentWeather(city)
-{
-  const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
-  const res = await fetch(url);
-  const data = await res.json();
-  const icon = data.weather[0].icon;
-  console.log(data);
-  currentWeatherContainer.innerHTML = `
-    ${data.main.temp}25&deg;C`;
-  iconContainer.innerHTML = `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
-}
-
-async function getForecasts(city)
-{
-  const geoUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
-  const geoRes = await fetch(geoUrl);
-  const geoData = await geoRes.json();
-  const lat = geoData.coord.lat;
-  const lon = geoData.coord.lon;
-  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
-  const forecastRes = await fetch(forecastUrl);
-  const forecastData = await forecastRes.json();
-  const forecastDataList = forecastData.list;
-  const forecasts = forecastDataList.map(forecast => ({
-    date: forecast.dt_txt,
-    main: forecast.weather[0].main,
-    description: forecast.weather[0].description,
-    feels_like: forecast.main.feels_like,
-    humidity: forecast.main.humidity,
-    temp: forecast.main.temp,
-    temp_max: forecast.main.temp_max,
-    temp_min: forecast.main.temp_min,
-  }));
-  return forecasts;
-}
-
-async function getLocation()
-{
-  if('geolocation' in navigator)
-  {
-    navigator.geolocation.getCurrentPosition(success, error);
-  }
-  else
-  {
+window.onload = () => {
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => loadWeatherByLocation(pos.coords.latitude, pos.coords.longitude),
+      () => locationContainer.innerHTML = 'Location access denied'
+    );
+  } else {
     locationContainer.innerHTML = 'Browser does not support geolocation';
   }
-}
-
-async function success(position)
-{
-  const crd = position.coords;
-  const lat = crd.latitude;
-  const lon = crd.longitude;
-  const geoUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-  const geoRes = await fetch(geoUrl);
-  const geoData = await geoRes.json();
-  const name = geoData[0].name;
-  const state = geoData[0].state;
-  locationContainer.innerHTML = `
-    <p>${state}</p>
-    <p>${name}</p>`;
-  getCurrentWeather(name);
-  const forecasts = await getForecasts(name);
-  console.log(forecasts);
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-  const day = String(today.getDate()).padStart(2, '0');
-
-  const formattedDate = `${year}-${month}-${day}`;
-  const todayForecasts = forecasts.filter(forecast => {
-    return forecast.date.includes(formattedDate);
-  });
-
-  todayForecasts.forEach(forecast => {
-    todayForecastContainer.innerHTML += `
-      <div>
-        ${forecast.date} <br>
-        icon <br>
-        ${forecast.temp} <br>
-      </div>`
-  });
-}
-
-function error(err)
-{
-  locationContainer.innerHTML = 'Location access denied';
-}
-
-
+};
