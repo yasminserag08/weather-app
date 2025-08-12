@@ -35,9 +35,10 @@ async function fetchCityFromCoords(lat, lon) {
 
 /* -------------------- 2. RENDERING LAYER -------------------- */
 
-function renderLocation(city) {
+function renderLocation(city, country) {
   locationContainer.innerHTML = `
-    <p>${city}</p>`;
+    <p>${city}</p>
+    <p>${country}</p>`;
 }
 
 function renderCurrentWeather(data) {
@@ -67,6 +68,8 @@ async function loadWeatherByCity(city) {
   renderCurrentWeather(currentData);
 
   const forecastData = await fetchForecast(city);
+  const country = forecastData.city.country;
+  const cityName = forecastData.city.name;
   const forecasts = forecastData.list.map(f => ({
     date: f.dt_txt,
     main: f.weather[0].main,
@@ -76,20 +79,21 @@ async function loadWeatherByCity(city) {
     temp: f.main.temp,
     temp_max: f.main.temp_max,
     temp_min: f.main.temp_min,
-    icon: f.weather[0].icon
+    icon: f.weather[0].icon,
   }));
 
   const today = new Date().toISOString().split('T')[0];
   const todayForecasts = forecasts.filter(f => f.date.includes(today));
   renderTodayForecast(todayForecasts);
+  renderLocation(cityName, country);
 }
 
 async function loadWeatherByLocation(lat, lon) {
   const cityData = await fetchCityFromCoords(lat, lon);
-  const cityName = cityData[0].name;
-  const state = cityData[0].state;
-  renderLocation(cityName);
-  await loadWeatherByCity(cityName);
+  const city = cityData[0].name;
+  const country = cityData[0].country;
+  renderLocation(city, country);
+  await loadWeatherByCity(city);
 }
 
 /* -------------------- 4. EVENTS -------------------- */
@@ -99,7 +103,6 @@ getForecastBtn.addEventListener('click', (event) => {
   const city = cityInput.value.trim();
   if (city) {
     loadWeatherByCity(city);
-    renderLocation(city);
   }
 });
 
