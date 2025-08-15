@@ -61,6 +61,20 @@ function renderTodayForecast(forecasts) {
   `).join('');
 }
 
+function renderAirConditions(data) {
+  todayForecastContainer.style.display = 'none';
+  airConditionsContainer.innerHTML = `
+    <div>
+      <p>Wind Speed: ${data.wind.speed} m/s</p>
+      <p>Visibility: ${data.visibility} m</p>
+      <p>Pressure: ${data.main.pressure} hPa</p>
+      <p>Maximum Temperature: ${data.temp_max - 273} &deg;C</p>
+      <p>Minimum Temperature: ${data.temp_min - 273} &deg;C</p>
+      <p>Humidity: ${data.main.humidity} %</p>
+    </div>
+  `;
+}
+
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
 
 async function loadWeatherByCity(city) {
@@ -79,13 +93,28 @@ async function loadWeatherByCity(city) {
     temp: f.main.temp,
     temp_max: f.main.temp_max,
     temp_min: f.main.temp_min,
-    icon: f.weather[0].icon,
+    chanceOfRain: f.pop * 100,
+    windSpeed: f.wind.speed,
+    visibility: f.visibility,
+    pressure: f.main.pressure,
+    icon: f.weather[0].icon
   }));
 
   const today = new Date().toISOString().split('T')[0];
   const todayForecasts = forecasts.filter(f => f.date.includes(today));
   renderTodayForecast(todayForecasts);
   renderLocation(cityName, country);
+  seeMoreBtn.addEventListener('click', function() {
+    if(this.innerHTML === "See more") {
+      renderAirConditions(currentData);
+      this.innerHTML = "See less";
+    }
+    else {
+      todayForecastContainer.style.display = 'flex';
+      this.innerHTML = "See more";
+      loadWeatherByCity(city);
+    }
+  });
 }
 
 async function loadWeatherByLocation(lat, lon) {
@@ -96,7 +125,7 @@ async function loadWeatherByLocation(lat, lon) {
   await loadWeatherByCity(city);
 }
 
-/* -------------------- 4. EVENTS -------------------- */
+/* ------------------- 4. EVENTS -------------------- */
 
 getForecastBtn.addEventListener('click', (event) => {
   event.preventDefault();
