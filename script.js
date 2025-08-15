@@ -10,6 +10,7 @@ const iconContainer = document.querySelector('.icon-container');
 const airConditionsContainer = document.querySelector('.air-conditions-container');
 const seeMoreBtn = document.querySelector('.see-more');
 const todayForecastsHeader = document.querySelector('.today-forecasts-header');
+const fiveDayForecastContainer = document.querySelector('.five-day-forecast-container');
 
 let currentDataGlobal;
 let cityDataGlobal;
@@ -85,6 +86,17 @@ function renderAirConditions(data) {
   `;
 }
 
+function renderFiveDayForecast(forecasts) {
+  fiveDayForecastContainer.innerHTML = '<h3>5-DAY FORECAST</h3>';
+  fiveDayForecastContainer.innerHTML += forecasts.map(forecast => `
+    <div class="five-day-forecast-item">
+      <p>${forecast.date.split(" ")[0]}</p>
+      <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
+      <p>${forecast.description}</p>
+      <p>${forecast.temp_max} / ${forecast.temp_min}</p>
+    </div>`).join('');
+}
+
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
 
 async function loadWeatherByCity(city) {
@@ -117,6 +129,16 @@ async function loadWeatherByCity(city) {
   todayForecastsGlobal = todayForecasts;
   renderTodayForecast(todayForecasts);
   renderLocation(cityName, country);
+  let lastDate = "";
+  const fiveDayForecasts = forecasts.filter(f => {
+    const forecastDate = f.date.split(" ")[0];
+    if (forecastDate !== lastDate) {
+      lastDate = forecastDate;
+      return true;
+    }
+    return false;
+  });
+  renderFiveDayForecast(fiveDayForecasts);
 }
 
 async function loadWeatherByLocation(lat, lon) {
