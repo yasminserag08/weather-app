@@ -9,6 +9,11 @@ const todayForecastContainer = document.querySelector('.today-forecasts-containe
 const iconContainer = document.querySelector('.icon-container');
 const airConditionsContainer = document.querySelector('.air-conditions-container');
 const seeMoreBtn = document.querySelector('.see-more');
+const todayForecastsHeader = document.querySelector('.today-forecasts-header');
+
+let currentDataGlobal;
+let cityDataGlobal;
+let todayForecastsGlobal;
 
 /* -------------------- 1. DATA LAYER -------------------- */
 
@@ -46,12 +51,13 @@ function renderCurrentWeather(data) {
   currentWeatherContainer.innerHTML = `${data.main.temp}&deg;C`;
   iconContainer.innerHTML = `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
   airConditionsContainer.innerHTML = `
-    <br> Real feel: ${data.main.feels_like}
-    <br> Wind: ${data.wind.speed}
-    <br> Humidity: ${data.main.humidity}`;
+    <br> Real feel: ${data.main.feels_like} &deg;C
+    <br> Wind: ${data.wind.speed} m/s
+    <br> Humidity: ${data.main.humidity}%`;
 }
 
 function renderTodayForecast(forecasts) {
+  todayForecastsHeader.style.display = 'block';
   todayForecastContainer.innerHTML = forecasts.map(forecast => `
     <div>
       ${forecast.date} <br>
@@ -62,15 +68,19 @@ function renderTodayForecast(forecasts) {
 }
 
 function renderAirConditions(data) {
+  todayForecastsHeader.style.display = 'none';
   todayForecastContainer.style.display = 'none';
   airConditionsContainer.innerHTML = `
     <div>
+      <p>Real feel: ${data.main.feels_like} &deg;C</p>
       <p>Wind Speed: ${data.wind.speed} m/s</p>
       <p>Visibility: ${data.visibility} m</p>
       <p>Pressure: ${data.main.pressure} hPa</p>
-      <p>Maximum Temperature: ${data.temp_max - 273} &deg;C</p>
-      <p>Minimum Temperature: ${data.temp_min - 273} &deg;C</p>
-      <p>Humidity: ${data.main.humidity} %</p>
+      <p>Maximum Temperature: ${data.main.temp_max} &deg;C</p>
+      <p>Minimum Temperature: ${data.main.temp_min} &deg;C</p>
+      <p>Humidity: ${data.main.humidity}%</p>
+      <p>Sunrise: ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</p>
+      <p>Sunset: ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</p>
     </div>
   `;
 }
@@ -78,8 +88,10 @@ function renderAirConditions(data) {
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
 
 async function loadWeatherByCity(city) {
+  currentCityGlobal = city;
   const currentData = await fetchCurrentWeather(city);
   renderCurrentWeather(currentData);
+  currentDataGlobal = currentData;
 
   const forecastData = await fetchForecast(city);
   const country = forecastData.city.country;
@@ -102,19 +114,9 @@ async function loadWeatherByCity(city) {
 
   const today = new Date().toISOString().split('T')[0];
   const todayForecasts = forecasts.filter(f => f.date.includes(today));
+  todayForecastsGlobal = todayForecasts;
   renderTodayForecast(todayForecasts);
   renderLocation(cityName, country);
-  seeMoreBtn.addEventListener('click', function() {
-    if(this.innerHTML === "See more") {
-      renderAirConditions(currentData);
-      this.innerHTML = "See less";
-    }
-    else {
-      todayForecastContainer.style.display = 'flex';
-      this.innerHTML = "See more";
-      loadWeatherByCity(city);
-    }
-  });
 }
 
 async function loadWeatherByLocation(lat, lon) {
@@ -132,6 +134,19 @@ getForecastBtn.addEventListener('click', (event) => {
   const city = cityInput.value.trim();
   if (city) {
     loadWeatherByCity(city);
+  }
+});
+
+seeMoreBtn.addEventListener('click', function() {
+  if(this.innerHTML === "See more") {
+    renderAirConditions(currentDataGlobal);
+    this.innerHTML = "See less";
+  }
+  else if(this.innerHTML === "See less") {
+    todayForecastContainer.style.display = 'flex'; 
+    renderTodayForecast(todayForecastsGlobal); 
+    renderCurrentWeather(currentDataGlobal);
+    this.innerHTML = "See more";
   }
 });
 
