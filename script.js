@@ -15,6 +15,7 @@ const airConditionsHeader = document.querySelector('.air-conditions-header');
 const fiveDayForecastContainer = document.querySelector('.five-day-forecast-container');
 const citiesDiv = document.querySelector('.cities');
 const weatherDiv = document.querySelector('.weather');
+let searchResultItems;
 let searchResults;
 
 let currentDataGlobal;
@@ -116,6 +117,17 @@ function renderCities(cities) {
       <p>${city.name}, ${city.country}, ${city.state || ''}</p>
     </div>
   `).join('');
+  searchResultItems = document.querySelectorAll('.search-result-item');
+  console.log(searchResultItems);
+  searchResultItems.forEach(node => {
+    node.addEventListener('click', async function() {
+      const city = this.querySelector('p').textContent.split(',').slice(0, 2).join(",").trim();
+      const textWithoutSpaces = city.replaceAll(" ", "");
+      console.log(textWithoutSpaces);
+      weatherDiv.click();
+      await loadWeatherByCity(textWithoutSpaces);
+    });
+  });
 }
 
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
@@ -206,6 +218,7 @@ seeMoreBtn.addEventListener('click', function() {
 });
 
 weatherDiv.addEventListener('click', (event) => {
+  cityInput.value = '';
   getForecastBtn.innerHTML = 'Get forecast';
   locationContainer.style.display = 'block';
   currentWeatherContainer.style.display = 'block';
@@ -216,10 +229,13 @@ weatherDiv.addEventListener('click', (event) => {
   iconContainer.style.display = 'flex';
   todayForecastsHeader.style.display = 'block';
   airConditionsHeader.style.display = 'block';
-  searchResults.style.display = 'none';
+  if(searchResults) {
+      searchResults.style.display = 'none';
+  }
 });
 
 citiesDiv.addEventListener('click', (event) => {
+  cityInput.value = '';
   getForecastBtn.innerHTML = 'Search cities';
   locationContainer.style.display = 'none';
   currentWeatherContainer.style.display = 'none';
@@ -236,6 +252,7 @@ citiesDiv.addEventListener('click', (event) => {
     mainPanel.appendChild(searchResults);
   }
   else {
+    searchResults.innerHTML = '';
     searchResults.style.display = 'block';
   }
 });
