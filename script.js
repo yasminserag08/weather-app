@@ -4,16 +4,22 @@ const apiKey = "3a58d57be667e419d11430ebc8ac6896";
 const cityInput = document.querySelector('.search-city');
 const getForecastBtn = document.querySelector('.get-forecast');
 const locationContainer = document.querySelector('.location-container');
+const mainPanel = document.querySelector('.main-panel-container');
 const currentWeatherContainer = document.querySelector('.current-weather-container');
 const todayForecastContainer = document.querySelector('.today-forecasts-container');
 const iconContainer = document.querySelector('.icon-container');
 const airConditionsContainer = document.querySelector('.air-conditions-container');
 const seeMoreBtn = document.querySelector('.see-more');
 const todayForecastsHeader = document.querySelector('.today-forecasts-header');
+const airConditionsHeader = document.querySelector('.air-conditions-header');
 const fiveDayForecastContainer = document.querySelector('.five-day-forecast-container');
+const citiesDiv = document.querySelector('.cities');
+const weatherDiv = document.querySelector('.weather');
+let searchResults;
 
 let currentDataGlobal;
 let cityDataGlobal;
+let currentCityGlobal;
 let todayForecastsGlobal;
 
 /* -------------------- 1. DATA LAYER -------------------- */
@@ -35,6 +41,13 @@ async function fetchForecast(city) {
 // Reverse geocode lat/lon to get city info
 async function fetchCityFromCoords(lat, lon) {
   const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+// Fetch cities by the same name for city search
+async function fetchCities(city) {
+  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=10&appid=${apiKey}`;
   const res = await fetch(url);
   return res.json();
 }
@@ -97,6 +110,14 @@ function renderFiveDayForecast(forecasts) {
     </div>`).join('');
 }
 
+function renderCities(cities) {
+  searchResults.innerHTML = cities.map(city => `
+    <div class="search-result-item">
+      <p>${city.name}, ${city.country}, ${city.state || ''}</p>
+    </div>
+  `).join('');
+}
+
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
 
 async function loadWeatherByCity(city) {
@@ -149,13 +170,25 @@ async function loadWeatherByLocation(lat, lon) {
   await loadWeatherByCity(city);
 }
 
+async function loadCities(city) {
+  const cities = await fetchCities(city);
+  renderCities(cities);
+}
+
 /* ------------------- 4. EVENTS -------------------- */
 
-getForecastBtn.addEventListener('click', (event) => {
-  event.preventDefault();
-  const city = cityInput.value.trim();
-  if (city) {
-    loadWeatherByCity(city);
+getForecastBtn.addEventListener('click', function(){
+  if(this.innerHTML === 'Get forecast') {
+    const city = cityInput.value.trim();
+    if (city) {
+      loadWeatherByCity(city);
+    }
+  }
+  else if(this.innerHTML === 'Search cities') {
+    const city = cityInput.value.trim();
+    if (city) {
+      loadCities(city);
+    }
   }
 });
 
@@ -169,6 +202,41 @@ seeMoreBtn.addEventListener('click', function() {
     renderTodayForecast(todayForecastsGlobal); 
     renderCurrentWeather(currentDataGlobal);
     this.innerHTML = "See more";
+  }
+});
+
+weatherDiv.addEventListener('click', (event) => {
+  getForecastBtn.innerHTML = 'Get forecast';
+  locationContainer.style.display = 'block';
+  currentWeatherContainer.style.display = 'block';
+  fiveDayForecastContainer.style.display = 'flex';
+  todayForecastContainer.style.display = 'flex';
+  airConditionsContainer.style.display = 'block';
+  seeMoreBtn.style.display = 'block';
+  iconContainer.style.display = 'flex';
+  todayForecastsHeader.style.display = 'block';
+  airConditionsHeader.style.display = 'block';
+  searchResults.style.display = 'none';
+});
+
+citiesDiv.addEventListener('click', (event) => {
+  getForecastBtn.innerHTML = 'Search cities';
+  locationContainer.style.display = 'none';
+  currentWeatherContainer.style.display = 'none';
+  fiveDayForecastContainer.style.display = 'none';
+  todayForecastContainer.style.display = 'none';
+  airConditionsContainer.style.display = 'none';
+  seeMoreBtn.style.display = 'none';
+  iconContainer.style.display = 'none';
+  todayForecastsHeader.style.display = 'none';
+  airConditionsHeader.style.display = 'none';
+  if(searchResults === undefined) {
+    searchResults = document.createElement('div');
+    searchResults.className = 'search-results';
+    mainPanel.appendChild(searchResults);
+  }
+  else {
+    searchResults.style.display = 'block';
   }
 });
 
