@@ -23,6 +23,8 @@ const kph = document.querySelector('.kph');
 const hpa = document.querySelector('.hpa');
 const kpa = document.querySelector('.kpa');
 const mm = document.querySelector('.mm');
+const metres = document.querySelector('.metres');
+const kilometres = document.querySelector('.kilometres');
 const time12h = document.querySelector('.twelve-hour');
 const time24h = document.querySelector('.twenty-four-hour');
 
@@ -44,7 +46,8 @@ let preferences = JSON.parse(localStorage.getItem('preferences')) || {
   temperature: 'Celsius',
   windSpeed: 'mps',
   pressure: 'hpa',
-  time: '24h'
+  time: '24h',
+  visibility: 'm'
 }; 
 
 /* -------------------- 1. DATA LAYER -------------------- */
