@@ -109,7 +109,7 @@ function renderCurrentWeather(data) {
   iconContainer.innerHTML = `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
   airConditionsContainer.innerHTML = `
     <br> Real feel: ${convertTemperature(data.main.feels_like)}
-    <br> Wind: ${data.wind.speed} m/s
+    <br> Wind: ${convertWindSpeed(data.wind.speed)}
     <br> Humidity: ${data.main.humidity}%`;
 }
 
@@ -129,12 +129,12 @@ function renderAirConditions(data) {
   todayForecastContainer.style.display = 'none';
   airConditionsContainer.innerHTML = `
     <div>
-      <p>Real feel: ${data.main.feels_like} &deg;C</p>
-      <p>Wind Speed: ${data.wind.speed} m/s</p>
+      <p>Real feel: ${convertTemperature(data.main.feels_like)}</p>
+      <p>Wind Speed: ${convertWindSpeed(data.wind.speed)}</p>
       <p>Visibility: ${data.visibility} m</p>
       <p>Pressure: ${data.main.pressure} hPa</p>
-      <p>Maximum Temperature: ${data.main.temp_max} &deg;C</p>
-      <p>Minimum Temperature: ${data.main.temp_min} &deg;C</p>
+      <p>Maximum Temperature: ${convertTemperature(data.main.temp_max)}</p>
+      <p>Minimum Temperature: ${convertTemperature(data.main.temp_min)}</p>
       <p>Humidity: ${data.main.humidity}%</p>
       <p>Sunrise: ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</p>
       <p>Sunset: ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</p>
@@ -149,7 +149,7 @@ function renderFiveDayForecast(forecasts) {
       <p>${forecast.date.split(" ")[0]}</p>
       <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
       <p>${forecast.description}</p>
-      <p>${forecast.temp_max} / ${forecast.temp_min}</p>
+      <p>${convertTemperature(forecast.temp_max)} / ${convertTemperature(forecast.temp_min)}</p>
     </div>`).join('');
 }
 
@@ -247,6 +247,14 @@ function convertTemperature(temp) {
   }
 }
 
+function convertWindSpeed(speed) {
+  if(preferences.windSpeed === 'mps') {
+    return `${speed} m/s`;
+  } else {
+    return `${Math.round((speed * 3.6) * 100) / 100} km/h`;
+  }
+}
+
 /* ------------------- 4. EVENTS -------------------- */
 
 getForecastBtn.addEventListener('click', function(){
@@ -298,6 +306,18 @@ celsius.addEventListener('click', async () => {
 
 fahrenheit.addEventListener('click', async () => {
   preferences.temperature = 'Fahrenheit';
+  localStorage.setItem('preferences', JSON.stringify(preferences));
+  await loadWeatherByCity(currentCityGlobal);
+});
+
+mps.addEventListener('click', async () => {
+  preferences.windSpeed = 'mps';
+  localStorage.setItem('preferences', JSON.stringify(preferences));
+  await loadWeatherByCity(currentCityGlobal);
+});
+
+kph.addEventListener('click', async () => {
+  preferences.windSpeed = 'kph';
   localStorage.setItem('preferences', JSON.stringify(preferences));
   await loadWeatherByCity(currentCityGlobal);
 });
