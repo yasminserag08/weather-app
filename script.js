@@ -275,4 +275,5 @@ window.onload = () => {
   } else {
     locationContainer.innerHTML = 'Browser does not support geolocation';
   }
+  showSection('weather');
 };
