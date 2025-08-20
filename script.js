@@ -16,6 +16,15 @@ const fiveDayForecastContainer = document.querySelector('.five-day-forecast-cont
 const weatherDiv = document.querySelector('.weather');
 const citiesDiv = document.querySelector('.cities');
 const settingsDiv = document.querySelector('.settings');
+const celsius = document.querySelector('.celsius');
+const fahrenheit = document.querySelector('.fahrenheit');
+const mps = document.querySelector('.mps');
+const kph = document.querySelector('.kph');
+const hpa = document.querySelector('.hpa');
+const kpa = document.querySelector('.kpa');
+const mm = document.querySelector('.mm');
+const time12h = document.querySelector('.twelve-hour');
+const time24h = document.querySelector('.twenty-four-hour');
 
 const sections = {
   cities: document.querySelector('.cities-section'),
@@ -30,6 +39,13 @@ let currentDataGlobal;
 let cityDataGlobal;
 let currentCityGlobal;
 let todayForecastsGlobal;
+
+let preferences = JSON.parse(localStorage.getItem('preferences')) || {
+  temperature: 'Celsius',
+  windSpeed: 'mps',
+  pressure: 'hpa',
+  time: '24h'
+}; 
 
 /* -------------------- 1. DATA LAYER -------------------- */
 
@@ -89,10 +105,10 @@ function renderLocation(city, country) {
 
 function renderCurrentWeather(data) {
   const icon = data.weather[0].icon;
-  currentWeatherContainer.innerHTML = `${data.main.temp}&deg;C`;
+  currentWeatherContainer.innerHTML = `${convertTemperature(data.main.temp)}`;
   iconContainer.innerHTML = `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
   airConditionsContainer.innerHTML = `
-    <br> Real feel: ${data.main.feels_like} &deg;C
+    <br> Real feel: ${convertTemperature(data.main.feels_like)}
     <br> Wind: ${data.wind.speed} m/s
     <br> Humidity: ${data.main.humidity}%`;
 }
@@ -103,7 +119,7 @@ function renderTodayForecast(forecasts) {
     <div>
       ${forecast.date} <br>
       <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
-      ${forecast.temp}&deg;C <br>
+      ${convertTemperature(forecast.temp)} <br>
     </div>
   `).join('');
 }
@@ -223,6 +239,14 @@ async function loadCities(city) {
   renderCities(cities);
 }
 
+function convertTemperature(temp) {
+  if(preferences.temperature === 'Celsius') {
+    return `${temp}&deg;C`;
+  } else {
+    return `${Math.round(((temp * 9/5) + 32) * 100) / 100}&deg;F`;
+  }
+}
+
 /* ------------------- 4. EVENTS -------------------- */
 
 getForecastBtn.addEventListener('click', function(){
@@ -266,6 +290,18 @@ settingsDiv.addEventListener('click', (event) => {
   showSection('settings');
 });
 
+celsius.addEventListener('click', async () => {
+  preferences.temperature = 'Celsius';
+  localStorage.setItem('preferences', JSON.stringify(preferences));
+  await loadWeatherByCity(currentCityGlobal);
+});
+
+fahrenheit.addEventListener('click', async () => {
+  preferences.temperature = 'Fahrenheit';
+  localStorage.setItem('preferences', JSON.stringify(preferences));
+  await loadWeatherByCity(currentCityGlobal);
+});
+
 window.onload = () => {
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(
@@ -276,4 +312,5 @@ window.onload = () => {
     locationContainer.innerHTML = 'Browser does not support geolocation';
   }
   showSection('weather');
+  console.log(preferences);
 };
