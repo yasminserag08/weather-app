@@ -13,10 +13,18 @@ const seeMoreBtn = document.querySelector('.see-more');
 const todayForecastsHeader = document.querySelector('.today-forecasts-header');
 const airConditionsHeader = document.querySelector('.air-conditions-header');
 const fiveDayForecastContainer = document.querySelector('.five-day-forecast-container');
-const citiesDiv = document.querySelector('.cities');
 const weatherDiv = document.querySelector('.weather');
+const citiesDiv = document.querySelector('.cities');
+const settingsDiv = document.querySelector('.settings');
+
+const sections = {
+  cities: document.querySelector('.cities-section'),
+  weather: document.querySelector('.weather-section'),
+  settings: document.querySelector('.settings-section')
+};
+
+const searchResults = document.querySelector('.search-results');
 let searchResultItems;
-let searchResults;
 
 let currentDataGlobal;
 let cityDataGlobal;
@@ -55,6 +63,24 @@ async function fetchCities(city) {
 
 /* -------------------- 2. RENDERING LAYER -------------------- */
 
+function showSection(name) {
+  Object.values(sections).forEach(section => {
+    section.style.display = 'none';
+  });
+  sections[name].style.display = 'flex';
+  if(name === 'settings')
+  {
+    cityInput.style.display = 'none';
+    getForecastBtn.style.display = 'none';
+  }
+  else {
+    cityInput.style.display = 'inline-block';
+    getForecastBtn.style.display = 'inline-block';
+    cityInput.value = '';
+    name === 'weather' ? getForecastBtn.innerHTML = 'Get forecast' : getForecastBtn.innerHTML = 'Search cities';
+  }
+}
+
 function renderLocation(city, country) {
   locationContainer.innerHTML = `
     <p>${city}</p>
@@ -77,7 +103,7 @@ function renderTodayForecast(forecasts) {
     <div>
       ${forecast.date} <br>
       <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
-      ${forecast.temp} <br>
+      ${forecast.temp}&deg;C <br>
     </div>
   `).join('');
 }
@@ -113,22 +139,32 @@ function renderFiveDayForecast(forecasts) {
 
 function renderCities(cities) {
   searchResults.innerHTML = cities.map(city => `
-    <div class="search-result-item">
-      <p>${city.name}, ${city.country}, ${city.state || ''}</p>
+    <div class="search-result-item" 
+         data-lat="${city.lat}" 
+         data-lon="${city.lon}" 
+         data-name="${city.name}" 
+         data-country="${city.country}" 
+         data-state="${city.state || ''}">
+      <p>${city.name}${city.state ? ", " + city.state : ""}, ${city.country}</p>
     </div>
   `).join('');
+
   searchResultItems = document.querySelectorAll('.search-result-item');
-  console.log(searchResultItems);
+
   searchResultItems.forEach(node => {
     node.addEventListener('click', async function() {
-      const city = this.querySelector('p').textContent.split(',').slice(0, 2).join(",").trim();
-      const textWithoutSpaces = city.replaceAll(" ", "");
-      console.log(textWithoutSpaces);
+      const lat = this.getAttribute('data-lat');
+      const lon = this.getAttribute('data-lon');
+      const name = this.getAttribute('data-name');
+      const country = this.getAttribute('data-country');
+
       weatherDiv.click();
-      await loadWeatherByCity(textWithoutSpaces);
+      await loadWeatherByLocation(lat, lon);
+      renderLocation(name, country);
     });
   });
 }
+
 
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
 
@@ -218,43 +254,16 @@ seeMoreBtn.addEventListener('click', function() {
 });
 
 weatherDiv.addEventListener('click', (event) => {
-  cityInput.value = '';
-  getForecastBtn.innerHTML = 'Get forecast';
-  locationContainer.style.display = 'block';
-  currentWeatherContainer.style.display = 'block';
-  fiveDayForecastContainer.style.display = 'flex';
-  todayForecastContainer.style.display = 'flex';
-  airConditionsContainer.style.display = 'block';
-  seeMoreBtn.style.display = 'block';
-  iconContainer.style.display = 'flex';
-  todayForecastsHeader.style.display = 'block';
-  airConditionsHeader.style.display = 'block';
-  if(searchResults) {
-      searchResults.style.display = 'none';
-  }
+  showSection('weather');
 });
 
 citiesDiv.addEventListener('click', (event) => {
-  cityInput.value = '';
-  getForecastBtn.innerHTML = 'Search cities';
-  locationContainer.style.display = 'none';
-  currentWeatherContainer.style.display = 'none';
-  fiveDayForecastContainer.style.display = 'none';
-  todayForecastContainer.style.display = 'none';
-  airConditionsContainer.style.display = 'none';
-  seeMoreBtn.style.display = 'none';
-  iconContainer.style.display = 'none';
-  todayForecastsHeader.style.display = 'none';
-  airConditionsHeader.style.display = 'none';
-  if(searchResults === undefined) {
-    searchResults = document.createElement('div');
-    searchResults.className = 'search-results';
-    mainPanel.appendChild(searchResults);
-  }
-  else {
-    searchResults.innerHTML = '';
-    searchResults.style.display = 'block';
-  }
+  showSection('cities');
+  searchResults.innerHTML = '';
+});
+
+settingsDiv.addEventListener('click', (event) => {
+  showSection('settings');
 });
 
 window.onload = () => {
