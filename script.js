@@ -16,17 +16,20 @@ const fiveDayForecastContainer = document.querySelector('.five-day-forecast-cont
 const weatherDiv = document.querySelector('.weather');
 const citiesDiv = document.querySelector('.cities');
 const settingsDiv = document.querySelector('.settings');
-const celsius = document.querySelector('.celsius');
-const fahrenheit = document.querySelector('.fahrenheit');
-const mps = document.querySelector('.mps');
-const kph = document.querySelector('.kph');
-const hpa = document.querySelector('.hpa');
-const kpa = document.querySelector('.kpa');
-const mm = document.querySelector('.mm');
-const metres = document.querySelector('.metres');
-const kilometres = document.querySelector('.kilometres');
-const time12h = document.querySelector('.twelve-hour');
-const time24h = document.querySelector('.twenty-four-hour');
+
+const settings = {
+  celsius: document.querySelector('.celsius'),
+  fahrenheit: document.querySelector('.fahrenheit'),
+  mps: document.querySelector('.mps'),
+  kph: document.querySelector('.kph'),
+  hpa: document.querySelector('.hpa'),
+  kpa: document.querySelector('.kpa'),
+  mmHg: document.querySelector('.mmHg'),
+  metres: document.querySelector('.metres'),
+  kilometres: document.querySelector('.kilometres'),
+  time12h: document.querySelector('.twelve-hour'),
+  time24h: document.querySelector('.twenty-four-hour')
+};
 
 const sections = {
   cities: document.querySelector('.cities-section'),
@@ -43,7 +46,7 @@ let currentCityGlobal;
 let todayForecastsGlobal;
 
 let preferences = JSON.parse(localStorage.getItem('preferences')) || {
-  temperature: 'Celsius',
+  temperature: 'celsius',
   windSpeed: 'mps',
   pressure: 'hpa',
   time: '24h',
@@ -134,8 +137,8 @@ function renderAirConditions(data) {
     <div>
       <p>Real feel: ${convertTemperature(data.main.feels_like)}</p>
       <p>Wind Speed: ${convertWindSpeed(data.wind.speed)}</p>
-      <p>Visibility: ${data.visibility} m</p>
-      <p>Pressure: ${data.main.pressure} hPa</p>
+      <p>Visibility: ${convertVisibility(data.visibility)}</p>
+      <p>Pressure: ${convertPressure(data.main.pressure)}</p>
       <p>Maximum Temperature: ${convertTemperature(data.main.temp_max)}</p>
       <p>Minimum Temperature: ${convertTemperature(data.main.temp_min)}</p>
       <p>Humidity: ${data.main.humidity}%</p>
@@ -242,8 +245,10 @@ async function loadCities(city) {
   renderCities(cities);
 }
 
+/* ------------------- 4. CONVERSIONS -------------------- */
+
 function convertTemperature(temp) {
-  if(preferences.temperature === 'Celsius') {
+  if(preferences.temperature === 'celsius') {
     return `${temp}&deg;C`;
   } else {
     return `${Math.round(((temp * 9/5) + 32) * 100) / 100}&deg;F`;
@@ -258,7 +263,25 @@ function convertWindSpeed(speed) {
   }
 }
 
-/* ------------------- 4. EVENTS -------------------- */
+function convertPressure(pressure) {
+  if(preferences.pressure === 'hpa') {
+    return `${pressure} hPa`;
+  } else if(preferences.pressure === 'mmHg') {
+    return `${Math.round((pressure * 0.750062) * 100) / 100} mmHg`;
+  } else if(preferences.pressure === 'kpa') {
+    return `${Math.round((pressure / 10) * 100) / 100} kPa`;
+  }
+}
+
+function convertVisibility(visibility) {
+  if(preferences.visibility === 'm') {
+    return `${visibility} m`;
+  } else {
+    return `${Math.round((visibility / 1000) * 100) / 100} km`;
+  }
+}
+
+/* ------------------- 5. EVENTS -------------------- */
 
 getForecastBtn.addEventListener('click', function(){
   if(this.innerHTML === 'Get forecast') {
@@ -301,29 +324,45 @@ settingsDiv.addEventListener('click', (event) => {
   showSection('settings');
 });
 
-celsius.addEventListener('click', async () => {
-  preferences.temperature = 'Celsius';
-  localStorage.setItem('preferences', JSON.stringify(preferences));
-  await loadWeatherByCity(currentCityGlobal);
-});
+function addSettingsEventListeners() {
+  Object.entries(settings).forEach(([key, element]) => {
+    element.addEventListener('click', async () => {
+      let category;
+      let value;
 
-fahrenheit.addEventListener('click', async () => {
-  preferences.temperature = 'Fahrenheit';
-  localStorage.setItem('preferences', JSON.stringify(preferences));
-  await loadWeatherByCity(currentCityGlobal);
-});
+      if (key === 'celsius' || key === 'fahrenheit') {
+        category = 'temperature';
+        value = key; 
+      } 
+      else if (key === 'mps' || key === 'kph') {
+        category = 'windSpeed';
+        value = key;
+      }
+      else if (key === 'hpa' || key === 'kpa' || key === 'mmHg') {
+        category = 'pressure';
+        value = key;
+      }
+      else if (key === 'metres' || key === 'kilometres') {
+        category = 'visibility';
+        value = key === 'metres' ? 'm' : 'km';
+      }
+      else if (key === 'time12h' || key === 'time24h') {
+        category = 'time';
+        value = key === 'time12h' ? '12h' : '24h';
+      }
 
-mps.addEventListener('click', async () => {
-  preferences.windSpeed = 'mps';
-  localStorage.setItem('preferences', JSON.stringify(preferences));
-  await loadWeatherByCity(currentCityGlobal);
-});
+      if (category && value) {
+        await set(category, value);
+      }
+    });
+  });
+}
 
-kph.addEventListener('click', async () => {
-  preferences.windSpeed = 'kph';
+async function set(setting, value) {
+  preferences[setting] = value;
   localStorage.setItem('preferences', JSON.stringify(preferences));
   await loadWeatherByCity(currentCityGlobal);
-});
+}
 
 window.onload = () => {
   if ('geolocation' in navigator) {
@@ -335,5 +374,6 @@ window.onload = () => {
     locationContainer.innerHTML = 'Browser does not support geolocation';
   }
   showSection('weather');
+  addSettingsEventListeners();
   console.log(preferences);
 };
