@@ -3,7 +3,8 @@ const apiKey = "3a58d57be667e419d11430ebc8ac6896";
 // DOM elements
 const cityInput = document.querySelector('.search-city');
 const getForecastBtn = document.querySelector('.get-forecast');
-const locationContainer = document.querySelector('.location-container');
+const cityContainer = document.querySelector('.city-container');
+const countryContainer = document.querySelector('.country-container');
 const mainPanel = document.querySelector('.main-panel-container');
 const currentWeatherContainer = document.querySelector('.current-weather-container');
 const todayForecastContainer = document.querySelector('.today-forecasts-container');
@@ -89,7 +90,7 @@ function showSection(name) {
   Object.values(sections).forEach(section => {
     section.style.display = 'none';
   });
-  sections[name].style.display = 'flex';
+  sections[name].style.display = 'block';
   if(name === 'settings')
   {
     cityInput.style.display = 'none';
@@ -104,15 +105,14 @@ function showSection(name) {
 }
 
 function renderLocation(city, country) {
-  locationContainer.innerHTML = `
-    <p>${city}</p>
-    <p>${country}</p>`;
+  cityContainer.innerHTML = `${city}`;
+  countryContainer.innerHTML = `${country}`;
 }
 
 function renderCurrentWeather(data) {
   const icon = data.weather[0].icon;
   currentWeatherContainer.innerHTML = `${convertTemperature(data.main.temp)}`;
-  iconContainer.innerHTML = `<img src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
+  iconContainer.innerHTML = `<img class="icon" src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
   airConditionsContainer.innerHTML = `
     <br> Real feel: ${convertTemperature(data.main.feels_like)}
     <br> Wind: ${convertWindSpeed(data.wind.speed)}
