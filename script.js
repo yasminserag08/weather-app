@@ -116,12 +116,12 @@ function renderCurrentWeather(data) {
   iconContainer.innerHTML = `<img class="icon" src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
   airConditions.innerHTML = `
   <div class="first-row-air-conditions">
-    <p class="air-conditions-item">Real feel: ${convertTemperature(data.main.feels_like)}</p>
-    <p class="air-conditions-item">Wind: ${convertWindSpeed(data.wind.speed)}</p>
+    <p class="air-conditions-item">Real feel <span>${convertTemperature(data.main.feels_like)}</span></p>
+    <p class="air-conditions-item">Wind <span>${convertWindSpeed(data.wind.speed)}</span></p>
   </div>
   <div class="second-row-air-conditions">
-    <p class="air-conditions-item">Humidity: ${data.main.humidity}%</p>
-    <p class="air-conditions-item">Visibility: ${convertVisibility(data.visibility)}</p>
+    <p class="air-conditions-item">Humidity <span>${data.main.humidity}%</span></p>
+    <p class="air-conditions-item">Visibility <span>${convertVisibility(data.visibility)}</span></p>
   </div>`;
 }
 
