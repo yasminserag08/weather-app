@@ -122,9 +122,9 @@ function renderCurrentWeather(data) {
 function renderTodayForecast(forecasts) {
   todayForecastsHeader.style.display = 'block';
   todayForecastContainer.innerHTML = forecasts.map(forecast => `
-    <div>
-      ${forecast.date} <br>
-      <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
+    <div>  
+      ${forecast.date.split(" ")[1]} <br>
+      <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png"> <br>
       ${convertTemperature(forecast.temp)} <br>
     </div>
   `).join('');
