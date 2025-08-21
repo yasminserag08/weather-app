@@ -8,15 +8,16 @@ const countryContainer = document.querySelector('.country-container');
 const mainPanel = document.querySelector('.main-panel-container');
 const currentWeatherContainer = document.querySelector('.current-weather-container');
 const todayForecastContainer = document.querySelector('.today-forecasts-container');
+const todayForecast = document.querySelector('.today-forecast');
 const iconContainer = document.querySelector('.icon-container');
 const airConditionsContainer = document.querySelector('.air-conditions-container');
 const seeMoreBtn = document.querySelector('.see-more');
-const todayForecastsHeader = document.querySelector('.today-forecasts-header');
 const airConditionsHeader = document.querySelector('.air-conditions-header');
 const fiveDayForecastContainer = document.querySelector('.five-day-forecast-container');
 const weatherDiv = document.querySelector('.weather');
 const citiesDiv = document.querySelector('.cities');
 const settingsDiv = document.querySelector('.settings');
+const airConditions = document.querySelector('.air-conditions');
 
 const settings = {
   celsius: document.querySelector('.celsius'),
@@ -113,38 +114,38 @@ function renderCurrentWeather(data) {
   const icon = data.weather[0].icon;
   currentWeatherContainer.innerHTML = `${convertTemperature(data.main.temp)}`;
   iconContainer.innerHTML = `<img class="icon" src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
-  airConditionsContainer.innerHTML = `
-    <br> Real feel: ${convertTemperature(data.main.feels_like)}
-    <br> Wind: ${convertWindSpeed(data.wind.speed)}
-    <br> Humidity: ${data.main.humidity}%`;
+  airConditions.innerHTML = `
+  <div class="first-row-air-conditions">
+    <p class="air-conditions-item">Real feel: ${convertTemperature(data.main.feels_like)}</p>
+    <p class="air-conditions-item">Wind: ${convertWindSpeed(data.wind.speed)}</p>
+  </div>
+  <div class="second-row-air-conditions">
+    <p class="air-conditions-item">Humidity: ${data.main.humidity}%</p>
+    <p class="air-conditions-item">Visibility: ${convertVisibility(data.visibility)}</p>
+  </div>`;
 }
 
 function renderTodayForecast(forecasts) {
-  todayForecastsHeader.style.display = 'block';
-  todayForecastContainer.innerHTML = forecasts.map(forecast => `
-    <div>  
-      ${forecast.date.split(" ")[1]} <br>
-      <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png"> <br>
-      ${convertTemperature(forecast.temp)} <br>
+  todayForecast.innerHTML += forecasts.map(forecast => `
+    <div class="today-forecast-item">  
+      <p class="time">${forecast.date.split(" ")[1]}</p> 
+      <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
+      <p class="temperature">${convertTemperature(forecast.temp)}</p>
     </div>
   `).join('');
 }
 
 function renderAirConditions(data) {
-  todayForecastsHeader.style.display = 'none';
-  todayForecastContainer.style.display = 'none';
-  airConditionsContainer.innerHTML = `
-    <div>
-      <p>Real feel: ${convertTemperature(data.main.feels_like)}</p>
-      <p>Wind Speed: ${convertWindSpeed(data.wind.speed)}</p>
-      <p>Visibility: ${convertVisibility(data.visibility)}</p>
-      <p>Pressure: ${convertPressure(data.main.pressure)}</p>
-      <p>Maximum Temperature: ${convertTemperature(data.main.temp_max)}</p>
-      <p>Minimum Temperature: ${convertTemperature(data.main.temp_min)}</p>
-      <p>Humidity: ${data.main.humidity}%</p>
-      <p>Sunrise: ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</p>
-      <p>Sunset: ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</p>
-    </div>
+  airConditions.innerHTML = `
+    <p>Real feel: ${convertTemperature(data.main.feels_like)}</p>
+    <p>Wind Speed: ${convertWindSpeed(data.wind.speed)}</p>
+    <p>Visibility: ${convertVisibility(data.visibility)}</p>
+    <p>Pressure: ${convertPressure(data.main.pressure)}</p>
+    <p>Maximum Temperature: ${convertTemperature(data.main.temp_max)}</p>
+    <p>Minimum Temperature: ${convertTemperature(data.main.temp_min)}</p>
+    <p>Humidity: ${data.main.humidity}%</p>
+    <p>Sunrise: ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</p>
+    <p>Sunset: ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</p>
   `;
 }
 
@@ -249,9 +250,9 @@ async function loadCities(city) {
 
 function convertTemperature(temp) {
   if(preferences.temperature === 'celsius') {
-    return `${temp}&deg;C`;
+    return `${Math.round(temp)}&deg;C`;
   } else {
-    return `${Math.round(((temp * 9/5) + 32) * 100) / 100}&deg;F`;
+    return `${Math.round((temp * 9/5) + 32)}&deg;F`;
   }
 }
 
