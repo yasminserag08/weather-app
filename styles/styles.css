@@ -1,11 +1,77 @@
+:root {
+  /* Base Colors */
+  --bg-main: rgb(11, 19, 30);
+  --text-main: white;
+  --text-subtle: #9399a2;
+  --text-muted: rgb(189, 197, 208);
+  --text-contrast: rgb(200, 208, 220);
+  --text-highlight: #b3bac4;
+
+  /* Sidebar */
+  --sidebar-bg: rgb(21, 30, 45);
+  --sidebar-border: rgb(40, 55, 75);
+  --sidebar-hover: rgb(32, 43, 59);
+
+  /* Buttons */
+  --btn-bg: rgb(53, 69, 94);
+  --btn-hover: rgb(70, 90, 120);
+  --btn-border: rgb(53, 69, 94);
+
+  /* Panels */
+  --panel-bg: rgb(32, 43, 59);
+  --panel-border: rgb(53, 69, 94);
+  --panel-border-strong: rgb(80, 120, 180);
+
+  /* Forecasts */
+  --forecast-item-border: rgb(53, 69, 94);
+
+  /* Inputs */
+  --input-bg: rgb(11, 19, 30);
+  --input-border: rgb(53, 69, 94);
+  --input-focus: rgb(80, 120, 180);
+}
+
 /* Base Styles */
 body {
-  background: rgb(11, 19, 30);
-  color: white;
+  background: var(--bg-main);
+  color: var(--text-main);
   font-family: 'Rubik', sans-serif;
   margin: 0;
   padding-left: 200px;
   padding-right: 170px;
+}
+
+body.light-mode {
+  /* Base Colors */
+  --bg-main: #f8f9fa;
+  --text-main: #1a1a1a;
+  --text-subtle: #555;
+  --text-muted: #666;
+  --text-contrast: #333;
+  --text-highlight: #0077cc;
+
+  /* Sidebar */
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #d0d7de;
+  --sidebar-hover: #f1f3f5;
+
+  /* Buttons */
+  --btn-bg: #e9ecef;
+  --btn-hover: #dee2e6;
+  --btn-border: #d0d7de;
+
+  /* Panels */
+  --panel-bg: #ffffff;
+  --panel-border: #d0d7de;
+  --panel-border-strong: #0077cc;
+
+  /* Forecasts */
+  --forecast-item-border: #e0e0e0;
+
+  /* Inputs */
+  --input-bg: #ffffff;
+  --input-border: #d0d7de;
+  --input-focus: #0077cc;
 }
 
 p {
@@ -17,7 +83,7 @@ h3 {
   font-weight: 600;
   padding-left: 1.5rem;
   padding-top: 1rem;
-  color: #9399a2;
+  color: var(--text-subtle);
   letter-spacing: 0.5px;
 }
 
@@ -30,12 +96,12 @@ h3 {
   height: 100%;
   top: 0;
   left: 0;
-  background-color: rgb(21, 30, 45);
-  border-right: 1px solid rgb(40, 55, 75);
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
   padding: 2rem 0;
   gap: 2rem;
   font-weight: 600;
-  color: rgb(189, 197, 208);
+  color: var(--text-muted);
 }
 
 .sidebar > div {
@@ -45,7 +111,7 @@ h3 {
 }
 
 .sidebar > div:hover {
-  background: rgb(32, 43, 59);
+  background: var(--sidebar-hover);
   border-radius: 8px;
 }
 
@@ -60,18 +126,18 @@ h3 {
   padding: 0.6rem 1rem;
   border-radius: 10px;
   border: none;
-  background: rgb(32, 43, 59);
-  color: white;
+  background: var(--sidebar-hover);
+  color: var(--text-main);
   font-size: 0.95rem;
 }
 
 .get-forecast,
 .option {
-  background: rgb(53, 69, 94);
+  background: var(--btn-bg);
   border: none;
   border-radius: 10px;
   padding: 0.6rem 1rem;
-  color: white;
+  color: var(--text-main);
   font-weight: 600;
   cursor: pointer;
   transition: opacity 1ms;
@@ -79,7 +145,7 @@ h3 {
 
 .get-forecast:hover,
 .option:hover {
-  background: rgb(70, 90, 120);
+  background: var(--btn-hover);
 }
 
 .get-forecast:active,
@@ -101,7 +167,7 @@ h3 {
 
 .country-container {
   font-size: 1rem;
-  color: #9399a2;
+  color: var(--text-subtle);
 }
 
 .current-weather-container {
@@ -119,7 +185,7 @@ h3 {
 .air-conditions-container {
   display: flex;
   flex-direction: column;
-  background-color: rgb(32, 43, 59);
+  background-color: var(--panel-bg);
   width: 77%;
   border-radius: 20px;
   margin-top: 20px;
@@ -138,7 +204,7 @@ h3 {
   flex-direction: column;
   align-items: center;
   flex: 1;
-  border-right: 1px solid rgb(53, 69, 94);
+  border-right: 1px solid var(--forecast-item-border);
   gap: 0.5rem;
 }
 .today-forecast-item:last-child {
@@ -153,17 +219,17 @@ h3 {
 }
 
 .see-more {
-  background: rgb(53, 69, 94);
+  background: var(--btn-bg);
   border: none;
   border-radius: 8px;
   padding: 0.3rem 0.8rem;
-  color: white;
+  color: var(--text-main);
   font-size: 0.8rem;
   cursor: pointer;
 }
 
 .see-more:hover {
-  background: rgb(70, 90, 120);
+  background: var(--btn-hover);
 }
 
 .air-conditions {
@@ -174,7 +240,7 @@ h3 {
 }
 
 .air-conditions-item {
-  color: #9399a2;
+  color: var(--text-subtle);
   font-size: 0.9rem;
 }
 
@@ -182,7 +248,7 @@ h3 {
   display: block;
   font-weight: 600;
   font-size: 1.1rem;
-  color: rgb(189, 197, 208);
+  color: var(--text-muted);
 }
 
 .five-day-forecast-container {
@@ -193,7 +259,7 @@ h3 {
   bottom: 10px;
   top: 10px;
   right: 10px;
-  background-color: rgb(32, 43, 59);
+  background-color: var(--panel-bg);
   border-radius: 20px;
   padding: 1rem;
   overflow-y: auto;
@@ -208,7 +274,7 @@ h3 {
   align-items: center;
   justify-content: space-between;
   padding: 1.25rem 0.75rem;
-  border-bottom: 1px solid rgb(53, 69, 94);
+  border-bottom: 1px solid var(--panel-border);
 }
 .five-day-forecast-item:last-child {
   border-bottom: none;
@@ -217,7 +283,7 @@ h3 {
 .five-day-forecast-item p {
   margin: 0;
   font-size: 0.9rem;
-  color: rgb(189, 197, 208);
+  color: var(--text-muted);
   flex: 1;
   text-align: left;
 }
@@ -231,7 +297,7 @@ h3 {
 .five-day-forecast-item .temperature {
   font-size: 1rem;
   font-weight: 600;
-  color: rgb(189, 197, 208);
+  color: var(--text-muted);
   min-width: 70px;
   text-align: right;
 }
@@ -240,18 +306,18 @@ h3 {
   display: none; 
   margin-left: 170px; 
   padding: 2rem;
-  background: rgb(11, 19, 30);
+  background: var(--bg-main);
   min-height: 100vh;
-  color: rgb(189, 197, 208);
+  color: var(--text-muted);
   font-family: 'Rubik', sans-serif;
 }
 
 .settings-section h2 {
   font-size: 1.8rem;
   font-weight: 600;
-  color: white;
+  color: var(--text-main);
   margin-bottom: 2rem;
-  border-bottom: 2px solid rgb(53, 69, 94);
+  border-bottom: 2px solid var(--panel-border);
   padding-bottom: 0.5rem;
 }
 
@@ -262,9 +328,9 @@ h3 {
 .settings-group h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #9399a2ff;
+  color: var(--text-subtle);
   margin-bottom: 1rem;
-  border-left: 4px solid rgb(80, 120, 180);
+  border-left: 4px solid var(--panel-border-strong);
   padding-left: 0.8rem;
 }
 
@@ -272,25 +338,25 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgb(21, 30, 45);
+  background: var(--sidebar-bg);
   padding: 1rem 1.5rem;
   margin-bottom: 1rem;
   border-radius: 12px;
-  border: 1px solid rgb(53, 69, 94);
+  border: 1px solid var(--panel-border);
 }
 
 .setting-item label {
   font-size: 1rem;
   font-weight: 500;
-  color: rgb(189, 197, 208);
+  color: var(--text-muted);
 }
 
 .setting-item input,
 .setting-item select {
-  background: rgb(11, 19, 30);
-  border: 1px solid rgb(53, 69, 94);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 8px;
-  color: white;
+  color: var(--text-main);
   padding: 0.4rem 0.7rem;
   font-size: 0.95rem;
   outline: none;
@@ -299,7 +365,7 @@ h3 {
 
 .setting-item input:focus,
 .setting-item select:focus {
-  border-color: rgb(80, 120, 180);
+  border-color: var(--input-focus);
 }
 
 .search-results {
@@ -310,7 +376,7 @@ h3 {
 }
 
 .search-result-item {
-  background: rgb(32, 43, 59);
+  background: var(--panel-bg);
   padding: 15px 20px;
   border-radius: 10px;
   cursor: pointer;
@@ -330,7 +396,7 @@ h3 {
   width: 100%;
   font-size: 1rem;
   font-weight: 500;
-  color: rgb(200, 208, 220);
+  color: var(--text-contrast);
 }
 
 .search-result-left {
@@ -341,16 +407,16 @@ h3 {
 .search-result-city {
   font-size: 1.2rem;
   font-weight: 600;
-  color: white;
+  color: var(--text-main);
 }
 
 .search-result-state {
   font-size: 0.9rem;
-  color: #9399a2;
+  color: var(--text-subtle);
 }
 
 .search-result-country {
   font-size: 1rem;
   font-weight: 600;
-  color: #b3bac4;
+  color: var(--text-highlight);
 }

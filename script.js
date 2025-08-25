@@ -30,7 +30,9 @@ const settings = {
   metres: document.querySelector('#metres'),
   kilometres: document.querySelector('#kilometres'),
   time12h: document.querySelector('#twelve-hour'),
-  time24h: document.querySelector('#twenty-four-hour')
+  time24h: document.querySelector('#twenty-four-hour'),
+  lightmode: document.querySelector('#light-mode'),
+  darkmode: document.querySelector('#dark-mode')
 };
 
 const sections = {
@@ -52,7 +54,8 @@ let preferences = JSON.parse(localStorage.getItem('preferences')) || {
   windSpeed: 'mps',
   pressure: 'hpa',
   time: '24h',
-  visibility: 'm'
+  visibility: 'm',
+  mode: 'dark'
 }; 
 
 /* -------------------- 1. DATA LAYER -------------------- */
@@ -377,6 +380,10 @@ function addSettingsEventListeners() {
         category = 'time';
         value = key === 'time12h' ? '12h' : '24h';
       }
+      else if (key === 'lightmode' || key === 'darkmode') {
+        category = 'mode';
+        value = key === 'lightmode' ? 'light' : 'dark';
+      }
 
       if (category && value) {
         await set(category, value);
@@ -403,4 +410,7 @@ window.onload = () => {
   showSection('weather');
   addSettingsEventListeners();
   console.log(preferences);
+  if(preferences.mode === 'light') {
+    document.body.classList.add('light-mode');
+  }
 };
