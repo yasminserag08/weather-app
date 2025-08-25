@@ -21,6 +21,7 @@
   --panel-bg: rgb(32, 43, 59);
   --panel-border: rgb(53, 69, 94);
   --panel-border-strong: rgb(80, 120, 180);
+  --panel-bg-hover: rgb(42, 55, 75);
 
   /* Forecasts */
   --forecast-item-border: rgb(53, 69, 94);
@@ -63,6 +64,7 @@ body.light-mode {
   /* Panels */
   --panel-bg: #ffffff;
   --panel-border: #d0d7de;
+  --panel-bg-hover: #f1f3f5;
   --panel-border-strong: #0077cc;
 
   /* Forecasts */
@@ -155,7 +157,7 @@ h3 {
 
 .main-panel-container {
   display: flex;
-  width: 100%;
+  width: 75%;
   justify-content: space-between;
   align-items: center;
 }
@@ -386,7 +388,7 @@ h3 {
 }
 
 .search-result-item:hover {
-  background: rgb(42, 55, 75);
+  background: var(--panel-bg-hover);
   transform: translateY(-2px);
 }
 

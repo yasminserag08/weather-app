@@ -114,6 +114,7 @@ function renderLocation(city, country) {
 }
 
 function renderCurrentWeather(data) {
+  console.log(data);
   const icon = data.weather[0].icon;
   currentWeatherContainer.innerHTML = `${convertTemperature(data.main.temp)}`;
   iconContainer.innerHTML = `<img class="icon" src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
@@ -125,14 +126,21 @@ function renderCurrentWeather(data) {
 }
 
 function renderTodayForecast(forecasts) {
-  todayForecast.innerHTML = forecasts.map(forecast => `
-    <div class="today-forecast-item">  
-      <p class="time">${convertTime(forecast.date.split(" ")[1])}</p> 
+  const fragment = document.createDocumentFragment();
+  forecasts.forEach(forecast => {
+    const div = document.createElement('div');
+    div.className = 'today-forecast-item';
+    div.innerHTML = `
+      <p class="time">${convertTime(forecast.date.split(" ")[1])}</p>
       <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
       <p class="temperature">${convertTemperature(forecast.temp)}</p>
-    </div>
-  `).join('');
+    `;
+    fragment.appendChild(div);
+  });
+  todayForecast.innerHTML = '';
+  todayForecast.appendChild(fragment);
 }
+
 
 function renderAirConditions(data) {
   airConditions.innerHTML = `
@@ -300,7 +308,6 @@ function renderWeatherData({currentData, forecastData}) {
   renderFiveDayForecast(fiveDayForecasts);
 
   renderLocation(forecastData.city.name, forecastData.city.country);
-  renderAirConditions(currentData);
 }
 
 
@@ -480,6 +487,13 @@ async function set(setting, value) {
   }
 }
 
+settings.lightmode.addEventListener('click', () => {
+  document.body.classList.add('light-mode');
+});
+
+settings.darkmode.addEventListener('click', () => {
+  document.body.classList.remove('light-mode');
+});
 
 window.onload = () => {
   if ('geolocation' in navigator) {
