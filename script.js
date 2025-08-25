@@ -258,18 +258,19 @@ async function loadWeatherByCity(city) {
     return;
   }
 
-  // Fetch current + forecast together
-  const [currentData, forecastData] = await Promise.all([
-    fetchCurrentWeather(city),
-    fetchForecast(city)
-  ]);
-
-  const data = { currentData, forecastData };
-  
-  // Cache it
-  cache[city] = { data, timestamp: now };
-
-  renderWeatherData(data);
+  try {
+    const [currentData, forecastData] = await Promise.all([
+      fetchCurrentWeather(city),
+      fetchForecast(city)
+    ]);
+    const data = { currentData, forecastData };
+    cache[city] = { data, timestamp: now };
+    renderWeatherData(data);
+  }
+  catch(error)
+  {
+    alert('Error fetching weather data');
+  }
 }
 
 function renderWeatherData({currentData, forecastData}) {
