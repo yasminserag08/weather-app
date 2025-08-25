@@ -20,17 +20,17 @@ const settingsDiv = document.querySelector('.settings');
 const airConditions = document.querySelector('.air-conditions');
 
 const settings = {
-  celsius: document.querySelector('.celsius'),
-  fahrenheit: document.querySelector('.fahrenheit'),
-  mps: document.querySelector('.mps'),
-  kph: document.querySelector('.kph'),
-  hpa: document.querySelector('.hpa'),
-  kpa: document.querySelector('.kpa'),
-  mmHg: document.querySelector('.mmHg'),
-  metres: document.querySelector('.metres'),
-  kilometres: document.querySelector('.kilometres'),
-  time12h: document.querySelector('.twelve-hour'),
-  time24h: document.querySelector('.twenty-four-hour')
+  celsius: document.querySelector('#celsius'),
+  fahrenheit: document.querySelector('#fahrenheit'),
+  mps: document.querySelector('#mps'),
+  kph: document.querySelector('#kph'),
+  hpa: document.querySelector('#hpa'),
+  kpa: document.querySelector('#kpa'),
+  mmHg: document.querySelector('#mmHg'),
+  metres: document.querySelector('#metres'),
+  kilometres: document.querySelector('#kilometres'),
+  time12h: document.querySelector('#twelve-hour'),
+  time24h: document.querySelector('#twenty-four-hour')
 };
 
 const sections = {
@@ -124,7 +124,7 @@ function renderCurrentWeather(data) {
 function renderTodayForecast(forecasts) {
   todayForecast.innerHTML = forecasts.map(forecast => `
     <div class="today-forecast-item">  
-      <p class="time">${forecast.date.split(" ")[1]}</p> 
+      <p class="time">${convertTime(forecast.date.split(" ")[1])}</p> 
       <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
       <p class="temperature">${convertTemperature(forecast.temp)}</p>
     </div>
@@ -140,8 +140,8 @@ function renderAirConditions(data) {
     <p class="air-conditions-item">Maximum Temperature <span> ${convertTemperature(data.main.temp_max)}</span></p>
     <p class="air-conditions-item">Minimum Temperature <span> ${convertTemperature(data.main.temp_min)}</span></p>
     <p class="air-conditions-item">Humidity <span> ${data.main.humidity}%</span></p>
-    <p class="air-conditions-item">Sunrise <span> ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</span></p>
-    <p class="air-conditions-item">Sunset <span> ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</span></p>
+    <p class="air-conditions-item">Sunrise <span> ${convertTime(data.sys.sunrise * 1000)}</span></p>
+    <p class="air-conditions-item">Sunset <span> ${convertTime(data.sys.sunset * 1000)}</span></p>
   `;
 }
 
@@ -155,34 +155,6 @@ function renderFiveDayForecast(forecasts) {
       <p>${convertTemperature(forecast.temp_max)} / ${convertTemperature(forecast.temp_min)}</p>
     </div>`).join('');
 }
-
-// function renderCities(cities) {
-//   searchResults.innerHTML = cities.map(city => `
-//     <div class="search-result-item" 
-//          data-lat="${city.lat}" 
-//          data-lon="${city.lon}" 
-//          data-name="${city.name}" 
-//          data-country="${city.country}" 
-//          data-state="${city.state || ''}">
-//       <p>${city.name}${city.state ? ", " + city.state : ""}, ${city.country}</p>
-//     </div>
-//   `).join('');
-
-//   searchResultItems = document.querySelectorAll('.search-result-item');
-
-//   searchResultItems.forEach(node => {
-//     node.addEventListener('click', async function() {
-//       const lat = this.getAttribute('data-lat');
-//       const lon = this.getAttribute('data-lon');
-//       const name = this.getAttribute('data-name');
-//       const country = this.getAttribute('data-country');
-
-//       weatherDiv.click();
-//       await loadWeatherByLocation(lat, lon);
-//       renderLocation(name, country);
-//     });
-//   });
-// }
 
 function renderCities(cities) {
   searchResults.innerHTML = cities.map(city => `
@@ -219,8 +191,6 @@ function renderCities(cities) {
     });
   });
 }
-
-
 
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
 
@@ -314,6 +284,28 @@ function convertVisibility(visibility) {
     return `${Math.round((visibility / 1000) * 100) / 100} km`;
   }
 }
+
+function convertTime(time) {
+  if (typeof time === "number") {
+    const date = new Date(time * 1000);
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    time = `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  if (preferences.time === "12h") {
+    let [hours, minutes, seconds] = time.split(":").map(Number);
+    let period = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    return `${hours}:${minutes.toString().padStart(2, "0")} ${period}`;
+  }
+
+  return time.slice(0, 5); 
+}
+
 
 /* ------------------- 5. EVENTS -------------------- */
 

@@ -5,7 +5,7 @@ body {
   font-family: 'Rubik', sans-serif;
   margin: 0;
   padding-left: 200px;
-  padding-right: 150px;
+  padding-right: 170px;
 }
 
 p {
@@ -65,7 +65,8 @@ h3 {
   font-size: 0.95rem;
 }
 
-.get-forecast {
+.get-forecast,
+.option {
   background: rgb(53, 69, 94);
   border: none;
   border-radius: 10px;
@@ -73,9 +74,17 @@ h3 {
   color: white;
   font-weight: 600;
   cursor: pointer;
+  transition: opacity 1ms;
 }
-.get-forecast:hover {
+
+.get-forecast:hover,
+.option:hover {
   background: rgb(70, 90, 120);
+}
+
+.get-forecast:active,
+.option:active {
+  opacity: 0.8;
 }
 
 .main-panel-container {
@@ -152,6 +161,7 @@ h3 {
   font-size: 0.8rem;
   cursor: pointer;
 }
+
 .see-more:hover {
   background: rgb(70, 90, 120);
 }
@@ -167,6 +177,7 @@ h3 {
   color: #9399a2;
   font-size: 0.9rem;
 }
+
 .air-conditions-item span {
   display: block;
   font-weight: 600;
@@ -343,4 +354,3 @@ h3 {
   font-weight: 600;
   color: #b3bac4;
 }
-
