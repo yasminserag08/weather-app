@@ -115,18 +115,14 @@ function renderCurrentWeather(data) {
   currentWeatherContainer.innerHTML = `${convertTemperature(data.main.temp)}`;
   iconContainer.innerHTML = `<img class="icon" src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
   airConditions.innerHTML = `
-  <div class="first-row-air-conditions">
     <p class="air-conditions-item">Real feel <span>${convertTemperature(data.main.feels_like)}</span></p>
     <p class="air-conditions-item">Wind <span>${convertWindSpeed(data.wind.speed)}</span></p>
-  </div>
-  <div class="second-row-air-conditions">
     <p class="air-conditions-item">Humidity <span>${data.main.humidity}%</span></p>
-    <p class="air-conditions-item">Visibility <span>${convertVisibility(data.visibility)}</span></p>
-  </div>`;
+    <p class="air-conditions-item">Visibility <span>${convertVisibility(data.visibility)}</span></p>`;
 }
 
 function renderTodayForecast(forecasts) {
-  todayForecast.innerHTML += forecasts.map(forecast => `
+  todayForecast.innerHTML = forecasts.map(forecast => `
     <div class="today-forecast-item">  
       <p class="time">${forecast.date.split(" ")[1]}</p> 
       <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
@@ -137,15 +133,15 @@ function renderTodayForecast(forecasts) {
 
 function renderAirConditions(data) {
   airConditions.innerHTML = `
-    <p>Real feel: ${convertTemperature(data.main.feels_like)}</p>
-    <p>Wind Speed: ${convertWindSpeed(data.wind.speed)}</p>
-    <p>Visibility: ${convertVisibility(data.visibility)}</p>
-    <p>Pressure: ${convertPressure(data.main.pressure)}</p>
-    <p>Maximum Temperature: ${convertTemperature(data.main.temp_max)}</p>
-    <p>Minimum Temperature: ${convertTemperature(data.main.temp_min)}</p>
-    <p>Humidity: ${data.main.humidity}%</p>
-    <p>Sunrise: ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</p>
-    <p>Sunset: ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</p>
+    <p class="air-conditions-item">Real feel <span> ${convertTemperature(data.main.feels_like)}</span></p>
+    <p class="air-conditions-item">Wind Speed <span> ${convertWindSpeed(data.wind.speed)}</span></p>
+    <p class="air-conditions-item">Visibility <span> ${convertVisibility(data.visibility)}</span></p>
+    <p class="air-conditions-item">Pressure <span> ${convertPressure(data.main.pressure)}</span></p>
+    <p class="air-conditions-item">Maximum Temperature <span> ${convertTemperature(data.main.temp_max)}</span></p>
+    <p class="air-conditions-item">Minimum Temperature <span> ${convertTemperature(data.main.temp_min)}</span></p>
+    <p class="air-conditions-item">Humidity <span> ${data.main.humidity}%</span></p>
+    <p class="air-conditions-item">Sunrise <span> ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</span></p>
+    <p class="air-conditions-item">Sunset <span> ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</span></p>
   `;
 }
 
@@ -160,15 +156,51 @@ function renderFiveDayForecast(forecasts) {
     </div>`).join('');
 }
 
+// function renderCities(cities) {
+//   searchResults.innerHTML = cities.map(city => `
+//     <div class="search-result-item" 
+//          data-lat="${city.lat}" 
+//          data-lon="${city.lon}" 
+//          data-name="${city.name}" 
+//          data-country="${city.country}" 
+//          data-state="${city.state || ''}">
+//       <p>${city.name}${city.state ? ", " + city.state : ""}, ${city.country}</p>
+//     </div>
+//   `).join('');
+
+//   searchResultItems = document.querySelectorAll('.search-result-item');
+
+//   searchResultItems.forEach(node => {
+//     node.addEventListener('click', async function() {
+//       const lat = this.getAttribute('data-lat');
+//       const lon = this.getAttribute('data-lon');
+//       const name = this.getAttribute('data-name');
+//       const country = this.getAttribute('data-country');
+
+//       weatherDiv.click();
+//       await loadWeatherByLocation(lat, lon);
+//       renderLocation(name, country);
+//     });
+//   });
+// }
+
 function renderCities(cities) {
   searchResults.innerHTML = cities.map(city => `
-    <div class="search-result-item" 
+    <div class="search-result-item"
          data-lat="${city.lat}" 
          data-lon="${city.lon}" 
          data-name="${city.name}" 
          data-country="${city.country}" 
          data-state="${city.state || ''}">
-      <p>${city.name}${city.state ? ", " + city.state : ""}, ${city.country}</p>
+      <div class="search-result-content">
+        <div class="search-result-left">
+          <span class="search-result-city">${city.name}</span>
+          ${city.state ? `<span class="search-result-state">${city.state}</span>` : ""}
+        </div>
+        <div class="search-result-right">
+          <span class="search-result-country">${city.country}</span>
+        </div>
+      </div>
     </div>
   `).join('');
 
@@ -187,6 +219,7 @@ function renderCities(cities) {
     });
   });
 }
+
 
 
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
@@ -301,6 +334,7 @@ getForecastBtn.addEventListener('click', function(){
 
 seeMoreBtn.addEventListener('click', function() {
   if(this.innerHTML === "See more") {
+    todayForecastContainer.style.display = 'none';
     renderAirConditions(currentDataGlobal);
     this.innerHTML = "See less";
   }

@@ -53,42 +53,55 @@
     </div>
 
     <div class="settings-section">
-      <h3>UNITS</h3>
-      <div class="units">
-        <h4>Temperature</h4>
-        <div class="temperature">
-          <div class="celsius">Celsius</div>
-          <div class="fahrenheit">Fahrenheit</div>
+      <!-- Units Section -->
+      <div class="settings-group">
+        <h3>Units</h3>
+        <div class="setting-item">
+          <label>Temperature</label>
+          <div class="options">
+            <button class="option">Celsius</button>
+            <button class="option">Fahrenheit</button>
+          </div>
+        </div>
+        <div class="setting-item">
+          <label>Wind Speed</label>
+          <div class="options">
+            <button class="option">m/s</button>
+            <button class="option">km/h</button>
+          </div>
         </div>
 
-        <h4>Wind Speed</h4>
-        <div class="wind-speed">
-          <div class="mps">m/s</div>
-          <div class="kph">km/h</div>
+        <div class="setting-item">
+          <label>Pressure</label>
+          <div class="options">
+            <button class="option">hPa</button>
+            <button class="option">kPa</button>
+            <button class="option">mmHg</button>
+          </div>
         </div>
 
-        <h4>Pressure</h4>
-        <div class="pressure">
-          <div class="hpa">hPa</div>
-          <div class="kpa">kPa</div>
-          <div class="mmHg">mmHg</div>
+        <div class="setting-item">
+          <label>Visibility</label>
+          <div class="options">
+            <button class="option">m</button>
+            <button class="option">km</button>
+          </div>
         </div>
       </div>
 
-      <h4>Visibility</h4>
-      <div class="visibility">
-        <div class="metres">m</div>
-        <div class="kilometres">km</div>
-      </div>
-      
-      <h3>GENERAL</h3>
-      <div class="general">
-        <div class="time">
-          <div class="twelve-hour">12 hour time</div>
-          <div class="twenty-four-hour">24 hour time</div>
+      <!-- General Section -->
+      <div class="settings-group">
+        <h3>General</h3>
+        <div class="setting-item">
+          <label>Time Format</label>
+          <div class="options">
+            <button class="option">12 hour</button>
+            <button class="option">24 hour</button>
+          </div>
         </div>
       </div>
     </div>
+
 
     <script src="script.js"></script>
   </body>
