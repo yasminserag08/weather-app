@@ -422,3 +422,88 @@ h3 {
   font-weight: 600;
   color: var(--text-highlight);
 }
+
+@media (max-width: 1024px) {
+  body {
+    padding-left: 150px;
+    padding-right: 20px;
+  }
+
+  .five-day-forecast-container {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .today-forecasts-container,
+  .air-conditions-container {
+    width: 100%;
+  }
+}
+
+/* Mobiles (<= 768px) */
+@media (max-width: 768px) {
+  body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .sidebar {
+    position: relative;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    justify-content: space-around;
+    padding: 1rem 0;
+  }
+
+  .search-area {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
+
+  .search-city {
+    flex: 1;
+    width: 100%;
+  }
+
+  .main-panel-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .icon-container img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .today-forecasts-container,
+  .air-conditions-container,
+  .five-day-forecast-container {
+    width: 90%;
+    margin: 10px auto;
+  }
+}
+
+/* Extra small (<= 480px) */
+@media (max-width: 480px) {
+  h3 {
+    font-size: 0.8rem;
+    padding-left: 0.8rem;
+  }
+
+  .city-container {
+    font-size: 1.5rem;
+  }
+
+  .current-weather-container {
+    font-size: 2rem;
+  }
+
+  .five-day-forecast-item {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}

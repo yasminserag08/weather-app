@@ -47,6 +47,7 @@ let searchResultItems;
 let currentDataGlobal;
 let cityDataGlobal;
 let currentCityGlobal;
+let fiveDayForecastGlobal;
 let todayForecastsGlobal;
 
 let preferences = JSON.parse(localStorage.getItem('preferences')) || {
@@ -114,7 +115,6 @@ function renderLocation(city, country) {
 }
 
 function renderCurrentWeather(data) {
-  console.log(data);
   const icon = data.weather[0].icon;
   currentWeatherContainer.innerHTML = `${convertTemperature(data.main.temp)}`;
   iconContainer.innerHTML = `<img class="icon" src="http://openweathermap.org/img/wn/${icon}@2x.png">`;
@@ -204,48 +204,6 @@ function renderCities(cities) {
 }
 
 /* -------------------- 3. CONTROLLER LAYER -------------------- */
-// async function loadWeatherByCity(city) {
-//   currentCityGlobal = city;
-//   const currentData = await fetchCurrentWeather(city);
-//   renderCurrentWeather(currentData);
-//   currentDataGlobal = currentData;
-
-//   const forecastData = await fetchForecast(city);
-//   const country = forecastData.city.country;
-//   const cityName = forecastData.city.name;
-//   const forecasts = forecastData.list.map(f => ({
-//     date: f.dt_txt,
-//     main: f.weather[0].main,
-//     description: f.weather[0].description,
-//     feels_like: f.main.feels_like,
-//     humidity: f.main.humidity,
-//     temp: f.main.temp,
-//     temp_max: f.main.temp_max,
-//     temp_min: f.main.temp_min,
-//     chanceOfRain: f.pop * 100,
-//     windSpeed: f.wind.speed,
-//     visibility: f.visibility,
-//     pressure: f.main.pressure,
-//     icon: f.weather[0].icon
-//   }));
-
-//   const today = new Date().toISOString().split('T')[0];
-//   const todayForecasts = forecasts.filter(f => f.date.includes(today));
-//   todayForecastsGlobal = todayForecasts;
-//   renderTodayForecast(todayForecasts);
-//   renderLocation(cityName, country);
-//   let lastDate = "";
-//   const fiveDayForecasts = forecasts.filter(f => {
-//     const forecastDate = f.date.split(" ")[0];
-//     if (forecastDate !== lastDate) {
-//       lastDate = forecastDate;
-//       return true;
-//     }
-//     return false;
-//   });
-//   renderFiveDayForecast(fiveDayForecasts);
-// }
-
 let cache = {}; // key: city name, value: { data: {current, forecast}, timestamp }
 
 async function loadWeatherByCity(city) {
@@ -306,6 +264,7 @@ function renderWeatherData({currentData, forecastData}) {
     }
     return false;
   });
+  fiveDayForecastGlobal = fiveDayForecasts;
   renderFiveDayForecast(fiveDayForecasts);
 
   renderLocation(forecastData.city.name, forecastData.city.country);
@@ -326,7 +285,6 @@ async function loadCities(city) {
 }
 
 /* ------------------- 4. CONVERSIONS -------------------- */
-
 function convertTemperature(temp) {
   if(preferences.temperature === 'celsius') {
     return `${Math.round(temp)}&deg;C`;
@@ -470,20 +428,10 @@ async function set(setting, value) {
   localStorage.setItem('preferences', JSON.stringify(preferences));
 
   // Re-render using cached data instead of fetching again
-  if(currentDataGlobal && todayForecastsGlobal) {
+  if(currentDataGlobal && todayForecastsGlobal && fiveDayForecastGlobal) {
     renderCurrentWeather(currentDataGlobal);
     renderTodayForecast(todayForecastsGlobal);
-    let lastDate = "";
-    const forecasts = todayForecastsGlobal.concat(fiveDayForecastContainer.dataset.allForecasts || []);
-    const fiveDayForecasts = forecasts.filter(f => {
-      const forecastDate = f.date.split(" ")[0];
-      if (forecastDate !== lastDate) {
-        lastDate = forecastDate;
-        return true;
-      }
-      return false;
-    });
-    renderFiveDayForecast(fiveDayForecasts);
+    renderFiveDayForecast(fiveDayForecastGlobal);
   }
 }
 
