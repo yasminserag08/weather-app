@@ -473,7 +473,6 @@ async function set(setting, value) {
   if(currentDataGlobal && todayForecastsGlobal) {
     renderCurrentWeather(currentDataGlobal);
     renderTodayForecast(todayForecastsGlobal);
-    renderAirConditions(currentDataGlobal);
     let lastDate = "";
     const forecasts = todayForecastsGlobal.concat(fiveDayForecastContainer.dataset.allForecasts || []);
     const fiveDayForecasts = forecasts.filter(f => {
