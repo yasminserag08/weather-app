@@ -160,10 +160,10 @@ function renderFiveDayForecast(forecasts) {
   fiveDayForecastContainer.innerHTML = '<h3>5-DAY FORECAST</h3>';
   fiveDayForecastContainer.innerHTML += forecasts.map(forecast => `
     <div class="five-day-forecast-item">
-      <p>${forecast.date.split(" ")[0]}</p>
+      <p>${formatDate(forecast.date)}</p>
       <img src="http://openweathermap.org/img/wn/${forecast.icon}@2x.png">
       <p>${forecast.description}</p>
-      <p>${convertTemperature(forecast.temp_max)} / ${convertTemperature(forecast.temp_min)}</p>
+      <p>${convertTemperature(forecast.temp_max)}/${convertTemperature(forecast.temp_min)}</p>
     </div>`).join('');
 }
 
@@ -338,6 +338,12 @@ function convertTime(time) {
   }
 
   return time.slice(0, 5); 
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { day: "numeric", month: "short" }; 
+  return date.toLocaleDateString("en-GB", options);
 }
 
 
