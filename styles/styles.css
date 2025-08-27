@@ -120,6 +120,10 @@ h3 {
   border-radius: 8px;
 }
 
+.full-width {
+  padding-right: 10px;
+}
+
 /* Main space */
 .weather-section,
 .cities-section,
@@ -146,6 +150,7 @@ h3 {
   font-size: 0.95rem;
   outline: none;
 }
+
 .search-city:focus { border-color: var(--input-focus); }
 
 .get-forecast,

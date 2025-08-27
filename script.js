@@ -19,6 +19,7 @@ const citiesDiv = document.querySelector('.cities');
 const settingsDiv = document.querySelector('.settings');
 const airConditions = document.querySelector('.air-conditions');
 const errorMessage = document.querySelector('.error-message');
+const body = document.body;
 
 const settings = {
   celsius: document.querySelector('#celsius'),
@@ -108,6 +109,13 @@ function showSection(name) {
     getForecastBtn.style.display = 'inline-block';
     cityInput.value = '';
     name === 'weather' ? getForecastBtn.innerHTML = 'Get forecast' : getForecastBtn.innerHTML = 'Search cities';
+  }
+
+  if(name === 'cities' || name === 'error') {
+    body.classList.add('full-width');
+  }
+  else if(name === 'weather') {
+    body.classList.remove('full-width');
   }
 }
 
