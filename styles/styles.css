@@ -401,6 +401,18 @@ h3 {
   vertical-align: middle;
 }
 
+.error-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-section img {
+  width: 100px;
+  height: 100px;
+  margin-top: 50px;
+}
+
 /* ====== Responsiveness ====== */
 @media (min-width: 1440px) {
   .weather-section,
