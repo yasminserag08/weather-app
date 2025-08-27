@@ -390,6 +390,15 @@ h3 {
 .setting-item input:focus,
 .setting-item select:focus { border-color: var(--input-focus); }
 
+.error-message {
+  color: var(--text-error);
+  background: var(--bg-error);
+  border: 1px solid var(--border-error);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
 /* ====== Responsiveness ====== */
 @media (min-width: 1440px) {
   .weather-section,

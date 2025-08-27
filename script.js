@@ -237,7 +237,6 @@ async function loadWeatherByCity(city) {
   }
   catch(error)
   {
-    alert('Error fetching weather data');
     showSection('error');
     errorMessage.innerHTML = 'Error fetching weather data';
   }
