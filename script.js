@@ -18,6 +18,7 @@ const weatherDiv = document.querySelector('.weather');
 const citiesDiv = document.querySelector('.cities');
 const settingsDiv = document.querySelector('.settings');
 const airConditions = document.querySelector('.air-conditions');
+const errorMessage = document.querySelector('.error-message');
 
 const settings = {
   celsius: document.querySelector('#celsius'),
@@ -38,7 +39,8 @@ const settings = {
 const sections = {
   cities: document.querySelector('.cities-section'),
   weather: document.querySelector('.weather-section'),
-  settings: document.querySelector('.settings-section')
+  settings: document.querySelector('.settings-section'),
+  error: document.querySelector('.error-section')
 };
 
 const searchResults = document.querySelector('.search-results');
@@ -101,7 +103,7 @@ function showSection(name) {
     cityInput.style.display = 'none';
     getForecastBtn.style.display = 'none';
   }
-  else {
+  else if(name === 'weather' || name === 'cities') {
     cityInput.style.display = 'inline-block';
     getForecastBtn.style.display = 'inline-block';
     cityInput.value = '';
@@ -228,6 +230,8 @@ async function loadWeatherByCity(city) {
   catch(error)
   {
     alert('Error fetching weather data');
+    showSection('error');
+    errorMessage.innerHTML = 'Error fetching weather data';
   }
 }
 
@@ -353,12 +357,14 @@ getForecastBtn.addEventListener('click', function(){
   if(this.innerHTML === 'Get forecast') {
     const city = cityInput.value.trim();
     if (city) {
+      showSection('weather');
       loadWeatherByCity(city);
     }
   }
   else if(this.innerHTML === 'Search cities') {
     const city = cityInput.value.trim();
     if (city) {
+      showSection('cities');
       loadCities(city);
     }
   }
