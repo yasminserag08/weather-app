@@ -111,11 +111,11 @@ function showSection(name) {
     name === 'weather' ? getForecastBtn.innerHTML = 'Get forecast' : getForecastBtn.innerHTML = 'Search cities';
   }
 
-  if(name === 'cities' || name === 'error') {
-    body.classList.add('full-width');
-  }
-  else if(name === 'weather') {
+  if(name === 'weather') {
     body.classList.remove('full-width');
+  }
+  else {
+    body.classList.add('full-width');
   }
 }
 
