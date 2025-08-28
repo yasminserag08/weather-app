@@ -475,13 +475,19 @@ settings.darkmode.addEventListener('click', () => {
 window.onload = () => {
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(
-      (pos) => loadWeatherByLocation(pos.coords.latitude, pos.coords.longitude),
-      () => cityContainer.innerHTML = 'Location access denied'
+      (pos) => {
+        loadWeatherByLocation(pos.coords.latitude, pos.coords.longitude);
+      },
+      (error) => {
+        alert(`Geolocation failed: ${error.message}`);
+        loadWeatherByCity('Cairo');
+      }
     );
   } else {
-     alert('Browser does not support geolocation');
-     loadWeatherByCity('Cairo');
+    alert('Browser does not support geolocation');
+    loadWeatherByCity('Cairo');
   }
+
   showSection('weather');
   addSettingsEventListeners();
   console.log(preferences);
