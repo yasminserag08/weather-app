@@ -476,10 +476,11 @@ window.onload = () => {
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(
       (pos) => loadWeatherByLocation(pos.coords.latitude, pos.coords.longitude),
-      () => locationContainer.innerHTML = 'Location access denied'
+      () => cityContainer.innerHTML = 'Location access denied'
     );
   } else {
-    locationContainer.innerHTML = 'Browser does not support geolocation';
+     alert('Browser does not support geolocation');
+     loadWeatherByCity('Cairo');
   }
   showSection('weather');
   addSettingsEventListeners();
