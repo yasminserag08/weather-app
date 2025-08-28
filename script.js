@@ -20,6 +20,7 @@ const settingsDiv = document.querySelector('.settings');
 const airConditions = document.querySelector('.air-conditions');
 const errorMessage = document.querySelector('.error-message');
 const body = document.body;
+const errorIconContainer = document.querySelector('.error-icon-container');
 
 const settings = {
   celsius: document.querySelector('#celsius'),
@@ -116,6 +117,15 @@ function showSection(name) {
   }
   else {
     body.classList.add('full-width');
+  }
+
+  if(name === 'error') {
+    if(preferences.mode === 'light') {
+      errorIconContainer.appendChild(document.createElement('img')).src = "./error-black.svg";
+    }
+    else {
+      errorIconContainer.appendChild(document.createElement('img')).src = "./error-white.png";
+    }
   }
 }
 
