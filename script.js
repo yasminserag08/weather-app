@@ -121,10 +121,10 @@ function showSection(name) {
 
   if(name === 'error') {
     if(preferences.mode === 'light') {
-      errorIconContainer.appendChild(document.createElement('img')).src = "./error-black.svg";
+      errorIconContainer.innerHTML = `<img src="./error-black.svg" alt ="error">`;
     }
     else {
-      errorIconContainer.appendChild(document.createElement('img')).src = "./error-white.png";
+      errorIconContainer.innerHTML = `<img src="./error-white.png" alt ="error">`;
     }
   }
 }
