@@ -13,6 +13,9 @@ A simple weather forecast application that fetches real-time data from the **Ope
 
 ---
 
+## Live Demo
+[Demo](https://yasminserag08.github.io/weather-app/)
+
 ## Tech Stack
 - **HTML5**  
 - **CSS3** 
