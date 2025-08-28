@@ -479,7 +479,7 @@ window.onload = () => {
         loadWeatherByLocation(pos.coords.latitude, pos.coords.longitude);
       },
       (error) => {
-        alert(`Geolocation failed: ${error.message}`);
+        alert(`Geolocation failed: ${error.message}, showing Cairo instead.`);
         loadWeatherByCity('Cairo');
       }
     );
